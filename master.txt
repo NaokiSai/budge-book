@@ -1,0 +1,68 @@
+/**
+* 利用者・カテゴリのマスタ定義
+*/
+const MASTERS = {
+  // 利用者の定義
+  USER: [
+    { id: "USER001", name: "全員", keyword: "主カード" },
+    { id: "USER002", name: "ゆい", keyword: "家族カード" },
+    { id: "USER003", name: "なおき", keyword: "主カード" },
+  ],
+
+  // 収入
+  INCOME_METHOD: [
+    { id: "IMETH001", name: "銀行口座", keyword: [] },
+    { id: "IMETH002", name: "現金", keyword: [] },
+    { id: "IMETH998", name: "その他", keyword: [] },
+    { id: "IMETH999", name: "未分類", keyword: [] },
+  ],
+
+  // 支払カテゴリの定義
+  INCOME_CATEGORIES: [
+    { id: "ICAT001", name: "給与", keywords: [] },
+    { id: "ICAT998", name: "その他", keywords: [] },
+    { id: "ICAT999", name: "未分類", keywords: [] },
+  ],
+
+  // 支払い方法
+  PAYMENT_METHOD: [
+    { id: "PMETH001", name: "クレジットカード(三井住友)", keyword: [] },
+    { id: "PMETH002", name: "クレジットカード(エポス)", keyword: [] },
+    { id: "PMETH003", name: "現金", keyword: [] },
+    { id: "PMETH004", name: "d払い", keyword: [] },
+    { id: "PMETH005", name: "paypay", keyword: [] },
+    { id: "PMETH998", name: "その他", keyword: [] },
+    { id: "PMETH999", name: "未分類", keyword: [] },
+  ],
+
+  // 立替
+  PAYMENT_IS_ADVANCE: [
+    { id: "PISADV001", name: "立替なし", keyword: [] },
+    { id: "PISADV002", name: "立替あり", keyword: [] },
+  ],
+
+  // 支払カテゴリの定義
+  PAYMENT_CATEGORIES: [
+    { id: "PCAT001", name: "食費", keywords: [] },
+    { id: "PCAT002", name: "日用品", keywords: [] },
+    { id: "PCAT003", name: "交通費", keywords: [] },
+    { id: "PCAT004", name: "光熱費（水道・ガス・電気）", keywords: [] },
+    { id: "PCAT005", name: "通信費", keywords: [] },
+    { id: "PCAT006", name: "住まい", keywords: [] },
+    { id: "PCAT007", name: "衣類", keywords: [] },
+    { id: "PCAT008", name: "レジャー", keywords: [] },
+    { id: "PCAT009", name: "美容", keywords: [] },
+    { id: "PCAT010", name: "交際費", keywords: [] },
+    { id: "PCAT011", name: "書籍", keywords: [] },
+    { id: "PCAT012", name: "保険", keywords: [] },
+    { id: "PCAT013", name: "税金", keywords: [] },
+    { id: "PCAT014", name: "医療費", keywords: [] },
+    { id: "PCAT015", name: "教育", keywords: [] },
+    { id: "PCAT016", name: "設備", keywords: [] },
+    { id: "PCAT017", name: "ホビー", keywords: [] },
+    { id: "PCAT018", name: "旅費", keywords: [] },
+    { id: "PCAT019", name: "赤ちゃん", keywords: [] },
+    { id: "PCAT998", name: "その他", keywords: [] },
+    { id: "PCAT999", name: "未分類", keywords: [] }
+  ]
+};
