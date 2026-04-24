@@ -1,0 +1,168 @@
+function extractCardEmails() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // 1. 複数のメール条件と、それぞれの解析設定を定義
+  const configs = CONFIG_SUBJECT_MAIL
+
+  // 1.1. 現在の「年」を取得してシートを特定
+  const currentYear = Utilities.formatDate(new Date(), "JST", "yyyy");
+  let sheet = ss.getSheetByName(currentYear);
+
+  // もしその年のシートがなければ、新規作成してヘッダーを入れる
+  if (!sheet) {
+    sheet = ss.insertSheet(currentYear);
+    sheet.appendRow(["ID（タイムスタンプ）", "利用日", "利用先", "金額", "カテゴリ", "支払方法", "支払者", "立替の有無", "メモ"]);
+    // ヘッダーを太字にするなどの装飾（任意）
+    sheet.getRange("A1:I1").setFontWeight("bold").setBackground(COLOR_HEADER);
+  }
+
+  // 2. Gmail検索（15分おき実行を想定
+  configs.forEach(config => {
+    console.log(`--- ${config.name} のスキャン開始 ---`);
+    const threads = GmailApp.search(config.query, 0, 50); // 各設定ごとに50通ずつ
+
+    threads.forEach(thread => {
+      const messages = thread.getMessages();
+      messages.forEach(message => {
+        if (message.isUnread()) {
+          const body = message.getPlainBody();
+
+          // 改行や空白をすべて「1つのスペース」に置換して、1行の長い文字列として扱う
+          const flatBody = body.replace(/\s+/g, ' ');
+
+          // ほしい情報をメールから取得
+          let match = null;
+          for (const re of config.regExps) {
+            match = flatBody.match(re);
+            if (match) break; // マッチしたらループを抜ける
+          }
+
+          if (match) {
+            // id, date, shop, amount, category, paymentMethod, paymentPerson, isAdvancePayment, memo
+            const rawDate = match[1].trim(); // 例: "2026/04/18 10:52"
+            const shop = match[2].trim();
+            const amount = match[3].trim();
+
+            // --- タイムスタンプIDの作成 ---
+            // 数字以外（/ や : や スペース）をすべて除去
+            const id = rawDate.replace(/[^\d]/g, ""); // "202604181052" になる
+
+            // --- 重複チェック ---
+            // A列にあるIDをすべて取得して、今回のIDが含まれているか確認
+            const lastRow = sheet.getLastRow();
+            if (lastRow === 0) return; // データがなければチェック不要
+
+            const allIds = sheet.getRange(1, 1, lastRow, 1).getValues().flat();
+            // --- 高速化のポイント ---
+            // 配列をSet（集合）に変換。検索速度が圧倒的に速くなります。
+            const idSet = new Set(allIds.map(val => String(val)));
+            // 検索する側のIDも文字列にする
+            const currentId = String(id);
+
+            if (!idSet.has(id)) {
+              // 日付のフォーマット変換
+              let date = rawDate;
+              try {
+                let dateObj = new Date(rawDate);
+                date = Utilities.formatDate(dateObj, "JST", "yyyy/MM/dd");
+              } catch (e) { }
+
+              // A列にID、B列以降にデータを追加
+              sheet.appendRow([id, date, shop, amount, config.category, config.paymentMethod, config.paymentPerson, config.isAdvancePayment, config.memo]);
+              console.log(`新規登録成功：ID ${id}`);
+
+              // 処理が終わったら既読にする
+              message.markRead();
+            } else {
+              console.log(`スキップ（重複）：ID ${id}`);
+              // 重複している場合は、念のため既読にして次回の処理対象から外す
+              message.markRead();
+            }
+          }
+        }
+      });
+    });
+  })
+}
+
+/**
+ * フロントエンドからのGETリクエストを受け取る
+ */
+// function doGet(e) {
+//   return handleRequest(e);
+// }
+/**
+ * 疎通確認用：GETリクエストを受け取ってJSONを返す
+ */
+function doGet(e) {
+  
+  const token = e.parameter.access_token;
+  let responsePayload = "No Token Provided";
+  let httpCode = 0;
+
+  if (token) {
+    try {
+      // muteHttpExceptions: true を入れることで、エラー時も中身を読み取れるようにします
+      const url = `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`;
+      const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+      
+      responsePayload = response.getContentText();
+      httpCode = response.getResponseCode();
+    } catch (err) {
+      responsePayload = "Fetch Error: " + err.toString();
+    }
+  }
+
+  const result = {
+    httpStatus: httpCode,
+    rawResponse: responsePayload, // ここにエラーの正体が入ります
+    receivedToken: token ? (token.substring(0, 10) + "...") : "null"
+  };
+
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * フロントエンドからのPOSTリクエスト（データ登録など）を受け取る
+ */
+function doPost(e) {
+  return handleRequest(e);
+}
+/**
+ * 共通処理：認証チェックとレスポンス返却
+ */
+function handleRequest(e) {
+  // 1. 実行ユーザー（アクセスした人）のメールアドレスを取得
+  const userEmail = Session.getActiveUser().getEmail();
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // 2. セキュリティチェック：スプレッドシートの共有者（編集者または閲覧者）か判定
+  const editors = ss.getEditors().map(u => u.getEmail());
+  const viewers = ss.getViewers().map(u => u.getEmail());
+  const allowedUsers = [...editors, ...viewers];
+
+  if (!allowedUsers.includes(userEmail)) {
+    return createJsonResponse({ error: "Forbidden", message: "アクセス権限がありません。" }, 403);
+  }
+
+  // 3. 実際の処理（例：データの取得や書き込み）
+  // ここに、以前作成したメール抽出ロジックや、Reactから届いたデータの保存処理を書きます
+  const result = {
+    status: "success",
+    user: userEmail,
+    data: "ここにスプレッドシートのデータをいれる"
+  };
+
+  return createJsonResponse(result, 200);
+}
+
+/**
+ * JSONレスポンスを作成するユーティリティ
+ * CORS対策として重要です
+ */
+function createJsonResponse(data, statusCode) {
+  const output = ContentService.createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+  return output;
+}
