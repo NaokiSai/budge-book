@@ -84,101 +84,106 @@ import { useNavigate } from 'react-router-dom';
 // import { useAuth } from './AuthContext';
 import { useUser } from './UserContext'
 import { Button, Box, Container, Typography, Paper } from '@mui/material';
+import GASClient from './gasClient';
 
 export default function Login() {
   const navigate = useNavigate();
   // const { login } = useAuth();
   const { updateUserImage } = useUser();
 
-  const testConnection = async (accessToken: string) => {
-    // GASのURLにトークンをパラメータとして付与
-    const baseUrl = "https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec";
+  // const testConnection = async (accessToken: string) => {
+  //   // GASのURLにトークンをパラメータとして付与
+  //   const baseUrl = "https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec";
 
-    // option パラメータを追加してログインリクエストを明示的に指定
-    const gasUrl = `${baseUrl}?option=login&access_token=${accessToken}`;
+  //   // option パラメータを追加してログインリクエストを明示的に指定
+  //   const gasUrl = `${baseUrl}?option=login&access_token=${accessToken}`;
 
-    try {
-      const response = await fetch(gasUrl, {
-        method: 'GET',
-        mode: 'cors',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // }
-      });
+  //   try {
+  //     const response = await fetch(gasUrl, {
+  //       method: 'GET',
+  //       mode: 'cors',
+  //       // headers: {
+  //       //   'Content-Type': 'application/json',
+  //       // }
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
 
-      const json = await response.json();
-      console.log("GASからのレスポンス:", json);
+  //     const json = await response.json();
+  //     console.log("GASからのレスポンス:", json);
 
-      // ステータスがsuccess の場合、ログイン処理を実行
-      if (json.status === 'success') {
-        login();
-        navigate('/home');
-      } else {
-        alert(`ログインに失敗しました: ${json.message}`);
-      }
-    } catch (error) {
-      console.error("通信エラー:", error);
-      alert(`ネットワークエラーが発生しました: ${error}`);
-    }
-  };
+  //     // ステータスがsuccess の場合、ログイン処理を実行
+  //     if (json.status === 'success') {
+  //       login();
+  //       navigate('/home');
+  //     } else {
+  //       alert(`ログインに失敗しました: ${json.message}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("通信エラー:", error);
+  //     alert(`ネットワークエラーが発生しました: ${error}`);
+  //   }
+  // };
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       const accessToken = tokenResponse.access_token;
-      const baseUrl = 'https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec';
+      // const baseUrl = 'https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec';
 
       // パラメータとしてトークンを付与
-      const gasUrl = `${baseUrl}?option=login&access_token=${accessToken}`;
+      // const gasUrl = `${baseUrl}?option=login&access_token=${accessToken}`;
 
-      try {
-        const response = await fetch(gasUrl, {
-          method: 'GET', // GASへの初回アクセスはGETが最も安定します
-          mode: 'cors',
-          redirect: 'follow', // 重要：リダイレクトを追跡
-        });
+      // try {
+      //   const response = await fetch(gasUrl, {
+      //     method: 'GET', // GASへの初回アクセスはGETが最も安定します
+      //     mode: 'cors',
+      //     redirect: 'follow', // 重要：リダイレクトを追跡
+      //   });
 
-        if (!response.ok) throw new Error('Network response was not ok');
+      //   if (!response.ok) throw new Error('Network response was not ok');
 
-        const json = await response.json();
-        console.log("GASからのレスポンス:", JSON.stringify(json));
+      //   const json = await response.json();
+      //   console.log("GASからのレスポンス:", JSON.stringify(json));
 
-        // ステータスがsuccess の場合、ログイン処理を実行
-        if (json.httpStatus === 200) {
-          // login();
-          navigate('/home');
-          if (json.rawResponse) {
-            // 1. 文字列として入っている rawResponse をオブジェクトに変換
-            const userData = JSON.parse(json.rawResponse);
+      //   // ステータスがsuccess の場合、ログイン処理を実行
+      //   if (json.httpStatus === 200) {
+      //     // login();
+      //     navigate('/home');
+      //     if (json.rawResponse) {
+      //       // 1. 文字列として入っている rawResponse をオブジェクトに変換
+      //       const userData = JSON.parse(json.rawResponse);
 
-            // 2. 個別の値にアクセス
-            const userEmail = userData.email;
-            const userName = userData.name;
-            const userPicture = userData.picture;
+      //       // 2. 個別の値にアクセス
+      //       const userEmail = userData.email;
+      //       const userName = userData.name;
+      //       const userPicture = userData.picture;
 
 
-            console.log("ログインユーザー名:", userName);
-            console.log("メールアドレス:", userEmail);
-            console.log("プロフィール画像URL:", userPicture);
-            updateUserImage(userPicture); // UserContextのプロフィール画像を更新
+      //       console.log("ログインユーザー名:", userName);
+      //       console.log("メールアドレス:", userEmail);
+      //       console.log("プロフィール画像URL:", userPicture);
+      //       updateUserImage(userPicture); // UserContextのプロフィール画像を更新
 
-            // // 3. ここでステータスチェック（例：メールアドレスが取得できていれば成功とする）
-            // if (userEmail) {
-            //   login(); // AuthContextのログイン状態を更新
-            //   navigate('/home'); // ホーム画面へ遷移
-            // }
-          }
-        } else {
-          alert(`ログインに失敗しました: ${json.message}`);
-        }
+      //       // // 3. ここでステータスチェック（例：メールアドレスが取得できていれば成功とする）
+      //       // if (userEmail) {
+      //       //   login(); // AuthContextのログイン状態を更新
+      //       //   navigate('/home'); // ホーム画面へ遷移
+      //       // }
+      //     }
+      //   } else {
+      //     alert(`ログインに失敗しました: ${json.message}`);
+      //   }
 
-        // ここで login() や navigate() を実行
-      } catch (error) {
-        console.error('通信エラー:', error);
-      }
+      //   // ここで login() や navigate() を実行
+      // } catch (error) {
+      //   console.error('通信エラー:', error);
+      // }
+
+      const gasClient = new GASClient('https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec');
+      const result = await gasClient.login(accessToken);
+      console.log("GASクライアントのログイン結果:", result);
     },
     scope: "https://www.googleapis.com/auth/script.external_request https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email"
   });
