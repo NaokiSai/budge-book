@@ -14,7 +14,7 @@ export type LoginResponse = {
 export type FetchDataResponse = {
   status: 'success' | 'error';
   message: string;
-  data?: { month: string; granularity: 'summary' | 'detail' | 'full'; count: number; entries: DataEntry[] };
+  data?: { date: string; granularity: 'summary' | 'detail' | 'full'; count: number; entries: DataEntry[] };
   httpCode: number;
 };
 
@@ -57,7 +57,7 @@ class GASClient {
   async login(accessToken: string): Promise<LoginResponse> {
     try {
       console.log('🔑 ログイン開始');
-      
+
       const url = new URL(this.gasUrl);
       url.searchParams.append('option', 'login');
       url.searchParams.append('access_token', accessToken);
@@ -86,13 +86,15 @@ class GASClient {
   /**
    * データを取得
    */
-  async fetchData(accessToken: string, month: string, granularity: GranularityLevel = 'detail'): Promise<FetchDataResponse> {
+  async fetchData(accessToken: string, date: string, granularity: GranularityLevel = 'detail'): Promise<FetchDataResponse> {
     try {
+      console.log('✅ データ取得開始');
       const url = new URL(this.gasUrl);
       url.searchParams.append('option', 'fetch');
       url.searchParams.append('access_token', accessToken);
-      url.searchParams.append('month', month);
+      url.searchParams.append('date', date);
       url.searchParams.append('granularity', granularity);
+      console.log('📡 データ取得リクエストURL:', url.toString());
 
       const response = await fetch(url.toString(), {
         method: 'GET',
@@ -101,6 +103,7 @@ class GASClient {
       });
 
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+      // console.log('✅ データ取得成功:', await response.json());
       return await response.json();
     } catch (error) {
       console.error('🔴 データ取得エラー:', error);
@@ -115,7 +118,7 @@ class GASClient {
   async saveData(accessToken: string, data: any): Promise<SaveDataResponse> {
     try {
       console.log('💾 データ保存開始');
-      
+
       const url = new URL(this.gasUrl);
       url.searchParams.append('option', 'save');
       url.searchParams.append('access_token', accessToken);
@@ -131,7 +134,7 @@ class GASClient {
       });
 
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-      
+
       const responseData = await response.json();
       console.log('✅ データ保存成功:', responseData);
       return responseData;

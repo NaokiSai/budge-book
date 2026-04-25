@@ -6,6 +6,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickerDay, type PickerDayProps } from '@mui/x-date-pickers/PickerDay';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
+import { useData } from './DataContext';
+import GASClient from './gasClient';
+import type { FetchDataResponse } from './type';
 
 function getRandomNumber(min: number, max: number) {
   // eslint-disable-next-line no-restricted-properties -- used for interactive server simulation
@@ -32,7 +35,8 @@ function fakeFetch(date: Dayjs, { signal }: { signal: AbortSignal }) {
   });
 }
 
-const initialValue = dayjs('2022-04-17');
+// 今日の日付を入れる
+const initialValue = dayjs(new Date());
 
 function ServerDay(props: PickerDayProps & { highlightedDays?: number[] }) {
   const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
@@ -42,9 +46,10 @@ function ServerDay(props: PickerDayProps & { highlightedDays?: number[] }) {
 
   return (
     <Badge
+      sx={{ '.MuiBadge-badge': { top: '80%', right: '50%', padding: '0', minWidth: '4px', fontSize: '12px' } }}
       key={props.day.toString()}
       overlap="circular"
-      badgeContent={isSelected ? '' : undefined}
+      badgeContent={isSelected ? '●' : undefined}
     >
       <PickerDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
     </Badge>
@@ -55,6 +60,38 @@ export default function DateCalendarServerRequest() {
   const requestAbortController = React.useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
+  const [value, setValue] = React.useState<Dayjs | null>(null);
+  const { updateData } = useData();
+
+  const handleDateChange = (newValue: Dayjs | null) => {
+    if (newValue && newValue.isValid()) {
+      // 1. MUI(Dayjs)からJSのDateオブジェクトに変換
+      const targetDate = newValue.toDate();
+
+      // 2. 日本時間で YYYY-MM-DD 形式にする (sv-SEロケールを利用)
+      const formattedDate = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Asia/Tokyo'
+      }).format(targetDate);
+
+      // 3. フォーマットされた日付を使ってイベントを実行
+      console.log("整形後の日付:", formattedDate); // 例: "2026-04-26"
+      setValue(newValue);
+      getData(formattedDate);
+    }
+  };
+  const getData = async (date: string) => {
+    updateData([]); // データをリセットしてから新しいデータを取得する
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.error('ログインが必要です');
+      return;
+    }
+    const gasClient = new GASClient('https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec');
+    const response = await gasClient.fetchData(accessToken, date, 'detail');
+    const dataTemp: FetchDataResponse = JSON.parse(JSON.stringify(response)); // これで response を JSON オブジェクトとして扱えるようになります
+    // console.log('取得したデータ:', dataTemp);
+    updateData(dataTemp.data.entries);
+  }
 
   const fetchHighlightedDays = (date: Dayjs) => {
     const controller = new AbortController();
@@ -96,6 +133,7 @@ export default function DateCalendarServerRequest() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar
+        value={value}
         defaultValue={initialValue}
         loading={isLoading}
         onMonthChange={handleMonthChange}
@@ -108,6 +146,7 @@ export default function DateCalendarServerRequest() {
             highlightedDays,
           } as any,
         }}
+        onChange={handleDateChange}
       />
     </LocalizationProvider>
   );

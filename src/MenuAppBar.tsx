@@ -1,26 +1,21 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useUser } from './UserContext';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 export default function MenuAppBar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { userImage } = useUser();
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
-  };
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setAuth(event.target.checked);
+  // };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -40,10 +35,10 @@ export default function MenuAppBar() {
             aria-label="menu"
             sx={{ mr: 1 }}
           >
-            <MenuIcon fontSize="small" />
+            <AddShoppingCartIcon fontSize="small" />
           </IconButton>
           <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontSize: '1rem' }}>
-            Photos
+            家族家計簿
           </Typography>
           {auth && (
             <div>

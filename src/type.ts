@@ -1,0 +1,52 @@
+/** GASのレスポンス形式を定義 */
+type GasResponse = {
+  status: 'success' | 'error';
+  message?: string;
+  data?: any;
+  user?: {
+    id: string;
+    email: string;
+    name?: string;
+    picture?: string;
+    permissions?: string[];
+  };
+  httpCode?: number;
+};
+
+/**
+ * 家計簿データの1件分の明細
+ */
+type DataEntry = {
+  id: number | string;           // タイムスタンプ（数値）または "test"
+  date: string;                  // 利用日 (YYYY-MM-DD or 空文字)
+  shop: string;                  // 利用先
+  amount: number | string;       // 金額 (数値) または空文字
+  category: string;              // カテゴリコード
+  paymentMethod: string;         // 支払方法コード
+  paymentPerson: string;         // 支払者コード
+  isAdvancePayment: string;      // 立替の有無
+  memo: string;                  // メモ（エラー内容を含む場合あり）
+};
+
+/**
+ * 取得データの本体
+ */
+type FetchDataPayload = {
+  month: string;                 // 対象月 (YYYY-MM)
+  granularity: 'summary' | 'detail' | 'full';
+  count: number;                 // 取得件数
+  entries: DataEntry[];          // 明細リスト
+};
+
+/**
+ * GAS Web App API 全体レスポンス
+ */
+type FetchDataResponse = {
+  status: 'success' | 'error';
+  message: string;               // レスポンスメッセージ
+  user: string;                  // ユーザーメールアドレス
+  data: FetchDataPayload;
+  httpCode: number;              // ステータスコード
+};
+
+export type { GasResponse, DataEntry, FetchDataPayload, FetchDataResponse };
