@@ -4,16 +4,24 @@ import DateCalendarServerRequest from './DateCalendarServerRequest'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography';
-import GASClient from './gasClient';
-import type { DataEntry, FetchDataResponse } from './type'
+import type { DataEntry } from './type'
 import { useEffect } from 'react'
-import { BudgeListItem } from './BudgeListItem';
-import { BudgeList } from './BudgeList';
+import { BudgeListItem } from './conponents/BudgeListItem';
+import { BudgeList } from './conponents/BudgeList';
 import { useData } from './DataContext';
-import Skeleton from '@mui/material/Skeleton';
+import { BudgeListItemSkelton } from './conponents/BudgeListItemSkelton'
+import { getDayData } from './DataService'
+import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  SwipeableList,
+  SwipeableListItem,
+  SwipeAction
+} from 'react-swipeable-list';
+import 'react-swipeable-list/dist/styles.css'; // スタイルを忘れずにインポート
+import { Stack } from '@mui/material'
 
 function Home() {
-  const { data, updateData } = useData();
+  const { data, updateData, loading, setLoading } = useData();
 
   // useeffectでデータを取得する
   useEffect(() => {
@@ -21,42 +29,50 @@ function Home() {
   }, []);
 
   const getData = async () => {
-    // onSuccess: async (tokenResponse) => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      console.error('ログインが必要です');
-      return;
+    // 1. 開始時にローディングをON
+    setLoading(true);
+
+    try {
+      // 日付計算（sv-SE フォーマットは YYYY-MM-DD になる）
+      const date = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Asia/Tokyo'
+      }).format(new Date());
+
+      const dataTemp = await getDayData(date); // これも必要に応じて呼び出してください
+      dataTemp !== null && dataTemp.data !== undefined && updateData(dataTemp.data.entries);
+      dataTemp !== null && dataTemp.data !== undefined && console.log("取得したデータ:", dataTemp.data); // 取得したデータをコンソールに表示
+    } catch (error) {
+      console.error('データ取得に失敗しました:', error);
+      // 必要ならここでユーザーにトースト通知などを出す
+    } finally {
+      // 3. 成功・失敗に関わらず、最後に必ずローディングをOFF
+      setLoading(false);
     }
-
-    // const date = new Date().toISOString().slice(0, 7); // "2026-04"
-    // const date = new Date().toISOString().slice(0, 10); // "2026-04-25"
-    // const date = new Intl.DateTimeFormat('sv-SE', {
-    //   timeZone: 'Asia/Tokyo'
-    // }).format(new Date());
-
-    // 1. 現在の時刻を取得
-    const targetDate = new Date();
-
-    // 2. 今日をマークする（月を跨いでもJSが自動計算します）
-    targetDate.setDate(targetDate.getDate());
-
-    // 3. 日本時間で YYYY-MM-DD 形式にする
-    const date = new Intl.DateTimeFormat('sv-SE', {
-      timeZone: 'Asia/Tokyo'
-    }).format(targetDate);
-
-
-    // console.log('リクエストする日付:', date);
-    const gasClient = new GASClient('https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec');
-    const response = await gasClient.fetchData(accessToken, date, 'detail');
-    const dataTemp: FetchDataResponse = JSON.parse(JSON.stringify(response)); // これで response を JSON オブジェクトとして扱えるようになります
-    // console.log('取得したデータ:', dataTemp);
-    updateData(dataTemp.data.entries);
-    // }
-  }
+  };
 
   // 合計金額を計算する
   const totalAmount = data?.reduce((sum, entry) => sum + Number(entry.amount), 0);
+
+  // 左スワイプ時に表示されるアクション部分
+  const trailingActions = (
+    <SwipeAction onClick={() => {}}>
+      <Stack
+        sx={{
+          backgroundColor: 'error.main',
+          display: 'flex',
+          alignItems: 'center',
+          px: 3,
+          maxWidth: 64,
+          height: '100%',
+          color: 'white',
+          cursor: 'pointer'
+        }}
+      >
+        <DeleteIcon />
+        <Typography variant="button" sx={{ ml: 1 }}>削除</Typography>
+      </Stack>
+    </SwipeAction>
+  );
 
   return (
     <Box
@@ -83,11 +99,18 @@ function Home() {
       </Box>
       <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
         <BudgeList>
-          {data?.map((entry: DataEntry) => (data.length > 0 ?
-            <BudgeListItem entry={entry} key={entry.id} />
-            :
-            <Skeleton />
-          ))}
+          <SwipeableList>
+            {data?.map((entry: DataEntry) => (loading ? (
+              <BudgeListItemSkelton />
+            ) : (
+              <SwipeableListItem
+                key={entry.id}
+                trailingActions={trailingActions}
+              >
+                <BudgeListItem entry={entry} key={entry.id} />
+              </SwipeableListItem>
+            )))}
+          </SwipeableList>
         </BudgeList>
       </Box>
       <SimpleBottomNavigation />

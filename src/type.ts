@@ -36,6 +36,7 @@ type FetchDataPayload = {
   granularity: 'summary' | 'detail' | 'full';
   count: number;                 // 取得件数
   entries: DataEntry[];          // 明細リスト
+  uniqueDates: string[];           // 明細の中で利用されている日付のリスト (YYYY-MM-DD)
 };
 
 /**
@@ -45,7 +46,7 @@ type FetchDataResponse = {
   status: 'success' | 'error';
   message: string;               // レスポンスメッセージ
   user: string;                  // ユーザーメールアドレス
-  data: FetchDataPayload;
+  data?: FetchDataPayload;
   httpCode: number;              // ステータスコード
 };
 

@@ -2,21 +2,24 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './UserContext'
 import { Button, Box, Container, Typography, Paper } from '@mui/material';
-import GASClient from './gasClient';
 import type { GasResponse } from './type';
+import { gasClient } from './api';
 
 export default function Login() {
   const navigate = useNavigate();
   const { updateUserImage } = useUser();
 
   const login = useGoogleLogin({
+
     onSuccess: async (tokenResponse) => {
+
       const accessToken = tokenResponse.access_token;
-      const gasClient = new GASClient('https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec');
+      // const gasClient = new GASClient('https://script.google.com/macros/s/AKfycbxcgW3w06EKs7Hulkr6MaFvfEWNMd6la86WG1KXzrOm9izPv8X5fsUkZVfUiER3zAxA/exec');
       const result = await gasClient.login(accessToken);
       // console.log("GASクライアントのログイン結果:", result);
       const json: GasResponse = JSON.parse(JSON.stringify(result)); // これで result を JSON オブジェクトとして扱えるようになります
       // console.log("GASクライアントのログイン結果（JSON形式）:", json);
+
       if (json.httpCode === 200) {
         // localStorage にトークンを保存
         localStorage.setItem('accessToken', accessToken);

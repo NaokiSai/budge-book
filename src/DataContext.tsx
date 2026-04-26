@@ -5,6 +5,8 @@ import type { DataEntry } from './type';
 interface DataContextType {
   data: DataEntry[]; // ここでデータの型を定義
   updateData: (newData: DataEntry[]) => void; // データを更新する関数も定義
+  loading: boolean; // ローディング状態を追加
+  setLoading: (loading: boolean) => void; // ローディング状態を更新する関数も定義
 }
 
 // 2. 初期値は null でも良いが、型アサーションを使用して型を定義
@@ -17,13 +19,14 @@ interface DataProviderProps {
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [data, setData] = useState<DataEntry[]>([]);
+  const [loading, setLoading] = useState<boolean>(false); // ローディング状態を管理
 
   const updateData = (newData: DataEntry[]) => {
     setData(newData);
   };
 
   return (
-    <DataContext.Provider value={{ data, updateData }}>
+    <DataContext.Provider value={{ data, updateData, loading, setLoading }}>
       {children}
     </DataContext.Provider>
   );

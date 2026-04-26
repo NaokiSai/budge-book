@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, type ReactNode } from 'react';
-import type { DataEntry } from './type';
 
 // 1. コンテキストで扱うデータの型を定義
 interface UserContextType {

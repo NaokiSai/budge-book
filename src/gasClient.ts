@@ -42,12 +42,37 @@ export type DataEntry = {
 // --- クライアントクラス ---
 
 class GASClient {
+  private static instance: GASClient; // シングルトン用
   private gasUrl: string;
-  private timeout: number = 30000;
+  // フロントエンド側での簡易キャッシュ（key: "2024-05", value: FetchDataResponse）
+  private dataCache: Map<string, FetchDataResponse> = new Map();
+  private abortController: AbortController | null = null; // ★追加
 
-  constructor(gasUrl: string) {
+  // privateにして外部からの new を禁止
+  private constructor(gasUrl: string) {
     this.gasUrl = gasUrl;
-    console.log('📊 GAS クライアント初期化（/exec対応）');
+    console.log('📊 GAS クライアント初期化（シングルトン保持）');
+  }
+
+  /**
+   * インスタンスを取得する（シングルトン）
+   */
+  public static getInstance(gasUrl?: string): GASClient {
+    if (!GASClient.instance) {
+      if (!gasUrl) {
+        throw new Error("初回初期化にはURLが必要です。");
+      }
+      GASClient.instance = new GASClient(gasUrl);
+    }
+    return GASClient.instance;
+  }
+
+  /**
+   * キャッシュをクリアする（データ更新後などに呼ぶ）
+   */
+  public clearCache(): void {
+    this.dataCache.clear();
+    console.log('🧹 フロントエンドキャッシュをクリアしました');
   }
 
   /**
@@ -83,34 +108,79 @@ class GASClient {
     }
   }
 
+  // /**
+  //  * データを取得
+  //  */
+  // async fetchData(accessToken: string, date: string, granularity: GranularityLevel = 'detail'): Promise<FetchDataResponse> {
+  //   try {
+  //     console.log('✅ データ取得開始');
+  //     const url = new URL(this.gasUrl);
+  //     url.searchParams.append('option', 'fetch');
+  //     url.searchParams.append('access_token', accessToken);
+  //     url.searchParams.append('date', date);
+  //     url.searchParams.append('granularity', granularity);
+  //     // console.log('📡 データ取得リクエストURL:', url.toString());
+
+  //     const response = await fetch(url.toString(), {
+  //       method: 'GET',
+  //       mode: 'cors',
+  //       redirect: 'follow',
+  //     });
+
+  //     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+  //     // console.log('✅ データ取得成功:', await response.json());
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error('🔴 データ取得エラー:', error);
+  //     return { status: 'error', message: String(error), httpCode: 0 };
+  //   }
+  // }
   /**
-   * データを取得
+   * データを取得（キャッシュ対応版）
    */
   async fetchData(accessToken: string, date: string, granularity: GranularityLevel = 'detail'): Promise<FetchDataResponse> {
+    const cacheKey = `${date}_${granularity}`;
+
+    // 1. キャッシュがあれば即座に返す（通信ゼロ）
+    if (this.dataCache.has(cacheKey)) {
+      console.log(`🚀 キャッシュからデータを返却: ${cacheKey}`);
+      return this.dataCache.get(cacheKey)!;
+    }
+
+    // ★ 新しいコントローラーを作成
+    this.abortController = new AbortController();
+    const { signal } = this.abortController;
+
     try {
-      console.log('✅ データ取得開始');
+      console.log('✅ データ取得開始（ネットワーク通信）');
       const url = new URL(this.gasUrl);
       url.searchParams.append('option', 'fetch');
       url.searchParams.append('access_token', accessToken);
       url.searchParams.append('date', date);
       url.searchParams.append('granularity', granularity);
-      console.log('📡 データ取得リクエストURL:', url.toString());
 
       const response = await fetch(url.toString(), {
         method: 'GET',
         mode: 'cors',
         redirect: 'follow',
+        signal, // ★追加
       });
 
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-      // console.log('✅ データ取得成功:', await response.json());
-      return await response.json();
+
+      const result = await response.json();
+
+      // 2. 成功したらキャッシュに保存
+      if (result.status === 'success') {
+        this.dataCache.set(cacheKey, result);
+      }
+
+      return result;
     } catch (error) {
       console.error('🔴 データ取得エラー:', error);
       return { status: 'error', message: String(error), httpCode: 0 };
     }
   }
-
   /**
    * データを保存（データセット）
    * POSTリクエストもリダイレクト追跡を必須とする
