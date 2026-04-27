@@ -1,5 +1,5 @@
 import { gasClient } from "./api";
-import type { FetchDataResponse } from "./type";
+import type { FetchDataResponse } from "../type";
 
 export const getDayData = async (date: string): Promise<FetchDataResponse | null> => {
   // 1. 開始時にローディングをON
@@ -11,11 +11,6 @@ export const getDayData = async (date: string): Promise<FetchDataResponse | null
       console.error('ログインが必要です');
       return { status: 'error', message: 'ログインが必要です', httpCode: 401, user: '' }; // ここでエラーオブジェクトを返すのも一つの方法です
     }
-
-    // 日付計算（sv-SE フォーマットは YYYY-MM-DD になるので賢い選択ですね！）
-    // const date = new Intl.DateTimeFormat('sv-SE', {
-    //   timeZone: 'Asia/Tokyo'
-    // }).format(new Date());
 
     // 2. 通信実行（await で完了を待つ）
     const response = await gasClient.fetchData(accessToken, date, 'detail');

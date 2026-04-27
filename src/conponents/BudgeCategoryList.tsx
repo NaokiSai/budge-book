@@ -1,15 +1,20 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { List } from "./../styledComponents/List"
 import { SwipeableList, SwipeableListItem, SwipeAction } from "react-swipeable-list"
-import type { DataEntry } from "./../type"
-import { BudgeListItemSkelton } from "./BudgeListItemSkelton"
-import { BudgeListItem } from "./BudgeListItem"
+import type { ChartDataCategoryTotals } from "./../type"
+// import { BudgeListItemSkelton } from "./BudgeListItemSkelton"
+// import { BudgeListItem } from "./BudgeListItem"
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useData } from "./../DataContext"
+// import { useData } from "./../DataContext"
 import 'react-swipeable-list/dist/styles.css'; // スタイルを忘れずにインポート
+import { BudgeCategoryListItem } from "./BudgeCategoryListItem"
 
-export const BudgeList = () => {
-  const { data, loading } = useData();
+// type BudgeCategoryListProps ={
+
+// }
+
+export const BudgeCategoryList = ({ data }: { data: ChartDataCategoryTotals[] }) => {
+  // const { data, loading } = useData();
 
   // 左スワイプ時に表示されるアクション部分
   const trailingActions = (
@@ -36,16 +41,14 @@ export const BudgeList = () => {
     <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
       <List>
         <SwipeableList>
-          {data?.map((entry: DataEntry) => (loading ? (
-            <BudgeListItemSkelton />
-          ) : (
+          {data?.map((data: ChartDataCategoryTotals) => (
             <SwipeableListItem
-              key={entry.id}
+              key={data.id}
               trailingActions={trailingActions}
             >
-              <BudgeListItem entry={entry} key={entry.id} />
+              <BudgeCategoryListItem data={data} key={data.id} />
             </SwipeableListItem>
-          )))}
+          ))}
         </SwipeableList>
       </List>
     </Box>

@@ -50,4 +50,12 @@ type FetchDataResponse = {
   httpCode: number;              // ステータスコード
 };
 
-export type { GasResponse, DataEntry, FetchDataPayload, FetchDataResponse };
+/** チャート用のカテゴリ別合計データ */
+type ChartDataCategoryTotals = {
+	id: number;
+	value: number;
+	label: string;
+  rate?: number; // 全体に対する割合（%）を追加
+};
+
+export type { GasResponse, DataEntry, FetchDataPayload, FetchDataResponse, ChartDataCategoryTotals };

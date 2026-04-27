@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from './UserContext'
 import { Button, Box, Container, Typography, Paper } from '@mui/material';
 import type { GasResponse } from './type';
-import { gasClient } from './api';
+import { gasClient } from './service/api';
 
 export default function Login() {
   const navigate = useNavigate();

@@ -7,7 +7,7 @@ import { PickerDay, type PickerDayProps } from '@mui/x-date-pickers/PickerDay';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
 import { useData } from './DataContext';
-import { getDayData } from './DataService';
+import { getDayData } from './service/DataService';
 
 const initialValue = dayjs(new Date());
 
