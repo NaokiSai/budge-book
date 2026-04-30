@@ -1,9 +1,12 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from './UserContext'
-import { Button, Box, Container, Typography, Paper } from '@mui/material';
+import { useUser } from './AppContext'
+import { Box } from '@mui/material';
 import type { GasResponse } from './type';
 import { gasClient } from './service/api';
+import { Image } from './styledComponents/Image';
+import TopImage from './assets/Top.png'
+import { Button } from './styledComponents/Button';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,7 +28,7 @@ export default function Login() {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('user', JSON.stringify(json.user));
         navigate('/home');
-        updateUserImage(json.user?.picture !== undefined ? json.user.picture : ''); // UserContextのプロフィール画像を更新
+        updateUserImage(json.user?.picture !== undefined ? json.user.picture : ''); // AppContextのプロフィール画像を更新
       } else {
         alert(`ログインに失敗しました: ${json.message}`);
       }
@@ -34,33 +37,19 @@ export default function Login() {
   });
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            padding: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Typography component="h1" variant="h4" sx={{ mb: 3 }}>
-            ログイン
-          </Typography>
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-            <Button sx={{ textTransform: 'none', mx: 'auto' }} variant='contained' onClick={() => login()}>Googleでログイン</Button>
-          </Box>
-        </Paper>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: '#F6F2E2',
+        height: '100%'
+      }}
+    >
+      <Image src={TopImage} sx={{ width: '80%', mb: 0 }} />
+      <Box component="form" noValidate sx={{ mt: 5, mb: 'auto' }}>
+        <Button sx={{ mx: 'auto' }} variant='contained' onClick={() => login()}>Googleでログイン</Button>
       </Box>
-    </Container>
+    </Box>
   );
 }

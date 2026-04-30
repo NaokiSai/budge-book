@@ -32,11 +32,12 @@ type DataEntry = {
  * 取得データの本体
  */
 type FetchDataPayload = {
-  month: string;                 // 対象月 (YYYY-MM)
-  granularity: 'summary' | 'detail' | 'full';
-  count: number;                 // 取得件数
+  period: string;
+  pattern: string;
+  granularity: string;
+  count: number;
   entries: DataEntry[];          // 明細リスト
-  uniqueDates: string[];           // 明細の中で利用されている日付のリスト (YYYY-MM-DD)
+  uniqueDates: string[];         // 明細の中で利用されている日付のリスト (YYYY-MM-DD)
 };
 
 /**
@@ -52,9 +53,9 @@ type FetchDataResponse = {
 
 /** チャート用のカテゴリ別合計データ */
 type ChartDataCategoryTotals = {
-	id: number;
-	value: number;
-	label: string;
+  id: number;
+  value: number;
+  label: string;
   rate?: number; // 全体に対する割合（%）を追加
 };
 

@@ -1,42 +1,55 @@
-import { Typography } from '@mui/material'
-import MenuAppBar from './MenuAppBar'
-import SimpleBottomNavigation from './SimpleBottomNavigation'
-import { PageContainer } from './styledComponents/PageContaner';
 import { SelectYYYYMM } from './conponents/SelectYYYYMM';
 import { getDayData } from './service/DataService';
-import { useEffect, useState } from 'react';
-import { PieChart } from '@mui/x-charts/PieChart';
+import React, { useEffect, useState } from 'react';
 import { MASTERS } from './master';
 import { useData } from './DataContext';
 import { BudgeCategoryList } from './conponents/BudgeCategoryList';
 import type { ChartDataCategoryTotals } from './type';
+import { TotalAmount } from './conponents/TotalAmount';
+import { PieChart } from './PieChart';
 
 export default function Analytics() {
-	const { updateData } = useData();
-	// const { updateData, setLoading } = useData<{ [key: string]: number }>({});
+	const { updateData, loading, setLoading } = useData();
 	const [chartData, setChartData] = useState<ChartDataCategoryTotals[]>([]);
 	const [totalAmount, setTotalAmount] = useState(0);
-	const [selectedDate, setSelectedDate] = useState(new Intl.DateTimeFormat('sv-SE', {
-		timeZone: 'Asia/Tokyo'
-	}).format(new Date()));
+	const [selectedMonth, setSelectedMonth] = useState(
+		// 初期値はアプリを開いた日の月を入れる
+		new Intl.DateTimeFormat('sv-SE', {
+			timeZone: 'Asia/Tokyo',
+			year: 'numeric',
+			month: '2-digit',
+		}).format(new Date())
+	);
 
 	useEffect(() => {
-		getData();
-		console.log("選択された日付:", selectedDate); // 選択された日付をコンソールに表示
-	}, [selectedDate]);
+		let month: string = ''
+		if (selectedMonth === null) {
+			// 初期値はアプリを開いた日の月を入れる
+			month = new Intl.DateTimeFormat('sv-SE', {
+				timeZone: 'Asia/Tokyo',
+				year: 'numeric',
+				month: '2-digit',
+			}).format(new Date())
+		} else {
+			month = selectedMonth
+		}
 
-	const getData = async () => {
+		// 日付指定でデータを取得する
+		getData(month);
+
+	}, [selectedMonth]);
+
+	const getData = async (month: string) => {
+
+		setChartData([])
+		setTotalAmount(0)
 		// 1. 開始時にローディングをON
-		// setLoading(true);
+		setLoading(true);
 
 		try {
-			// 日付計算（sv-SE フォーマットは YYYY-MM-DD になる）
-			// const date = new Intl.DateTimeFormat('sv-SE', {
-			// 	timeZone: 'Asia/Tokyo'
-			// }).format(selectedDate);
 
-			const dataTemp = await getDayData(selectedDate); // これも必要に応じて呼び出してください
-			if (dataTemp !== null && dataTemp.data !== undefined) {
+			const dataTemp = await getDayData(month); // これも必要に応じて呼び出してください
+			if (dataTemp !== null && dataTemp.data !== undefined && dataTemp.data.period === month) {
 				updateData(dataTemp.data.entries);
 				// ChartDataCategoryTotalsの配列を作成するために、カテゴリごとに金額を合計する
 
@@ -56,7 +69,6 @@ export default function Analytics() {
 				// 合計金額を計算
 				const totalAmount = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
 				setTotalAmount(totalAmount);
-				// console.log("カテゴリごとの合計金額:", Object.values(categoryTotals).reduce((a, b) => a + b, 0)); // カテゴリごとの合計金額をコンソールに表示
 
 				// categoryTotalsオブジェクトをChartDataCategoryTotalsの配列に変換する
 				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, index) => ({
@@ -69,39 +81,27 @@ export default function Analytics() {
 					// b - a で降順（大きい順）
 					return (b.value as number) - (a.value as number);
 				});
+
 				setChartData(sortedData);
+				setLoading(false)
 
 			}
 		} catch (error) {
-			console.error('データ取得に失敗しました:', error);
+			setLoading(false)
+
 			// 必要ならここでユーザーにトースト通知などを出す
 		} finally {
 			// 3. 成功・失敗に関わらず、最後に必ずローディングをOFF
-			// setLoading(false);
+			setLoading(false);
 		}
 	};
 
-
 	return (
-		<PageContainer>
-			<MenuAppBar />
-			<SelectYYYYMM setSelectedDate={setSelectedDate} />
-			<PieChart
-				series={[
-					{
-						data: chartData,
-						outerRadius: 120,
-					},
-				]}
-				sx={{ ' .MuiChartsLegend-root': { gap: 1 } }} // 凡例を非表示にするスタイル
-				width={250}
-				height={250}
-			/>
-			<Typography variant="h6" align="center" sx={{ mt: 2 }}>
-				Total Amount: {Number(totalAmount).toLocaleString()}円
-			</Typography>
+		<React.Fragment>
+			<SelectYYYYMM setSelectedDate={setSelectedMonth} />
+			<PieChart loading={loading} chartData={chartData} />
+			<TotalAmount loading={loading} amount={totalAmount} />
 			<BudgeCategoryList data={chartData} />
-			<SimpleBottomNavigation />
-		</PageContainer>
+		</React.Fragment>
 	)
 }

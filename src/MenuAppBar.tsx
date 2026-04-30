@@ -5,8 +5,10 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { useUser } from './UserContext';
+import { useUser } from './AppContext';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { Image } from './styledComponents/Image';
+import LogoImage from './assets/Logo.png'
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -21,7 +23,7 @@ export default function MenuAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ minHeight: '48px' }}>
+    <AppBar position="static" sx={{ minHeight: '48px', backgroundColor: '#F8D67C' }}>
       <Toolbar variant="dense" sx={{ minHeight: '48px', py: 0.5 }}>
         <IconButton
           size="small"
@@ -30,9 +32,9 @@ export default function MenuAppBar() {
           aria-label="menu"
           sx={{ mr: 1 }}
         >
-          <AddShoppingCartIcon fontSize="small" />
+          <Image src={LogoImage}  sx={{ width: 40 }} />
         </IconButton>
-        <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontSize: '1rem' }}>
+        <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontSize: '1rem', color: '#4B2814' }}>
           家族家計簿
         </Typography>
         {userImage && (

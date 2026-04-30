@@ -1,6 +1,6 @@
 import { Container, Paper, Typography, Box, List, ListItem, ListItemText, Switch } from '@mui/material'
 import MenuAppBar from './MenuAppBar'
-import SimpleBottomNavigation from './SimpleBottomNavigation'
+import { BottomNavigation } from './BottomNavigation'
 
 export default function Settings() {
 	return (
@@ -46,7 +46,7 @@ export default function Settings() {
 					</Box>
 				</Paper>
 			</Container>
-			<SimpleBottomNavigation />
+			<BottomNavigation />
 		</>
 	)
 }
