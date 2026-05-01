@@ -6,6 +6,7 @@ const gasUrl = import.meta.env.VITE_GAS_URL; // Viteの場合
 // const gasUrl = process.env.NEXT_PUBLIC_GAS_URL; // Next.jsの場合
 
 if (!gasUrl) {
+  console.log("Full Env Object:", import.meta.env);
   throw new Error("環境変数 VITE_GAS_URL が設定されていません。");
 }
 
