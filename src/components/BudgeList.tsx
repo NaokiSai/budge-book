@@ -11,12 +11,36 @@ import noDataUrl from '@assets/NoData.png'
 import { Image } from "@styledComponents/Image"
 import '@css/BudgeList.css'
 // import React from "react"
-
+import EditIcon from '@mui/icons-material/Edit';
 export const BudgeList = () => {
   const { data, loading } = useData();
 
   // 左スワイプ時に表示されるアクション部分
-  const trailingActions = (
+  const editAction = (
+    <SwipeAction onClick={() => { }}>
+      <Stack
+        sx={{
+          backgroundColor: 'green',
+          display: 'flex',
+          alignItems: 'center',
+          px: 3,
+          maxWidth: 64,
+          minWidth: 64,
+          height: '100%',
+          color: 'white',
+          cursor: 'pointer',
+          justifyContent: 'center',
+          padding: 0,
+          mr: 1
+        }}
+      >
+        <EditIcon />
+        <Typography variant="button" sx={{ fontSize: 12 }}>編集</Typography>
+      </Stack>
+    </SwipeAction >
+  );
+
+  const deleteAction = (
     <SwipeAction onClick={() => { }}>
       <Stack
         sx={{
@@ -61,10 +85,10 @@ export const BudgeList = () => {
               <SwipeableListItem
                 key={entry.id}
                 // trailingActions={trailingActions}
-                leadingActions={trailingActions}
-                trailingActions={trailingActions}
-              // className='test'
-              threshold={0.1}
+                leadingActions={editAction}
+                trailingActions={deleteAction}
+                // className='test'
+                threshold={0.1}
               // maxSwipe={0}
               >
                 <BudgeListItem entry={entry} key={entry.id} />
