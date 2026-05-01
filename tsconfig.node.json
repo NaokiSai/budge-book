@@ -43,6 +43,9 @@
       "@assets/*": [
         "./src/assets/*"
       ],
+      "@css/*": [
+        "./src/css/*"
+      ],
     }
   },
   "include": [

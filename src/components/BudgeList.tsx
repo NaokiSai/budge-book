@@ -9,6 +9,7 @@ import { useData } from "@cnxt/DataContext"
 import 'react-swipeable-list/dist/styles.css'; // スタイルを忘れずにインポート
 import noDataUrl from '@assets/NoData.png'
 import { Image } from "@styledComponents/Image"
+import '@css/BudgeList.css'
 
 export const BudgeList = () => {
   const { data, loading } = useData();
@@ -51,6 +52,7 @@ export const BudgeList = () => {
               <SwipeableListItem
                 key={entry.id}
                 trailingActions={trailingActions}
+                // className='test'
               >
                 <BudgeListItem entry={entry} key={entry.id} />
               </SwipeableListItem>
