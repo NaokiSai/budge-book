@@ -8,7 +8,16 @@ export default defineConfig({
   base: '/budge-book/',
   plugins: [
     react(),
-    VitePWA(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'budget-book',
+        short_name: 'budget',
+        start_url: '.', // base設定がある場合、ドット一つで「現在の階層」を指せます
+        scope: './',
+        display: 'standalone',
+      }
+    }),
     tsconfigPaths()
   ],
   build: {
