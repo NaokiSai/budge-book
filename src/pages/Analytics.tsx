@@ -78,7 +78,7 @@ export default function Analytics() {
 					label: MASTERS.getPaymentCategoryName(key), // ここでカテゴリIDを名前に変換
 					rate: totalAmount > 0 ? (categoryTotals[key] / totalAmount) * 100 : 0, // 全体に対する割合を計算
 				}));
-				console.log(temp)
+
 				const sortedData = [...temp].sort((a, b) => {
 					// b - a で降順（大きい順）
 					return (b.value as number) - (a.value as number);
