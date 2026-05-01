@@ -6,6 +6,7 @@ type DatePickerGroupProps = {
   // ここに必要なpropsを定義してください
   range?: 'year' | 'month' | 'date'
   setSelectedDate: (date: string) => void; // 例: 親コンポーネントから日付を受け取るための関数
+  initialDateStr?: string
 };
 
 /**
@@ -14,10 +15,17 @@ type DatePickerGroupProps = {
  * @returns 
  */
 export const DatePickerGroup = (props: DatePickerGroupProps) => {
-  const { range = 'date', setSelectedDate } = props
-  const [year, setYear] = useState(dayjs().year());
-  const [month, setMonth] = useState(dayjs().month() + 1); // 1-12
-  const [day, setDay] = useState(dayjs().date());
+  const { range = 'date', setSelectedDate, initialDateStr } = props
+
+  // 2. 分割して数値に変換
+  const parts = initialDateStr !== undefined ? initialDateStr.split('-') : '';
+  const initialYear = initialDateStr !== undefined ? Number(parts[0]) : dayjs().year();  // 2024
+  const initialMonth = initialDateStr !== undefined ? Number(parts[1]) : dayjs().month() + 1; // 6
+  const initialDay = initialDateStr !== undefined ? Number(parts[2]) : dayjs().date();   // 1
+
+  const [year, setYear] = useState(initialYear);
+  const [month, setMonth] = useState(initialMonth); // 1-12
+  const [day, setDay] = useState(initialDay);
   const [maxDays, setMaxDays] = useState(31);
 
   // 年・月が変更されたら、その月の最大日数を再計算する
@@ -44,7 +52,7 @@ export const DatePickerGroup = (props: DatePickerGroupProps) => {
           onChange={(e) => setYear(Number(e.target.value))}
           sx={{ width: 100 }}
           size="small">
-          {[2024, 2025, 2026].map(y => <MenuItem key={y} value={y}>{y}</MenuItem>)}
+          {[2024, 2025, 2026, 2027, 2028, 2029, 2030].map(y => <MenuItem key={y} value={y}>{y}</MenuItem>)}
         </Select>
       </FormControl>
       {/* 月 */}

@@ -14,6 +14,7 @@ export default function Add() {
 				paymentPerson: '',             // 支払者コード
 				isAdvancePayment: '',          // 立替の有無
 				memo: ''                         // メモ（エラー内容を含む場合あり）
-			}} />
+			}}
+			type="create" />
 	)
 }

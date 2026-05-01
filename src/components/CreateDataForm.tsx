@@ -10,6 +10,7 @@ import { Button } from '@styledComponents/Button'
 type CreateDataFormProps = {
 	// ここに必要なpropsを定義してください
 	data: DataEntry; // 例: 家計簿の明細データを受け取るためのprops
+	type: 'create' | 'change'
 };
 
 /**
@@ -17,7 +18,7 @@ type CreateDataFormProps = {
  * @param param0 
  * @returns 
  */
-export const CreateDataForm = ({ data }: CreateDataFormProps) => {
+export const CreateDataForm = ({ data, type }: CreateDataFormProps) => {
 	const { loading, setLoading } = useData();
 	const [selectedDate, setSelectedDate] =
 		useState(data.id === 'new' ? new Intl.DateTimeFormat('sv-SE', {
@@ -73,12 +74,17 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 
 	return (
 		<Stack direction="column" spacing={1} sx={{ width: 'fit-content', mx: 'auto', pt: 2 }}>
-			<Box sx={{ margin: '4px auto !important', }}>
-				<DatePickerGroup setSelectedDate={setSelectedDate} />
-			</Box>
+			{type === 'create' &&
+				<Box sx={{ margin: '4px auto !important', }}>
+					<DatePickerGroup setSelectedDate={setSelectedDate} />
+				</Box>}
+			{type === 'change' &&
+				<Box sx={{ margin: '4px auto !important', }}>
+					<DatePickerGroup setSelectedDate={setSelectedDate} initialDateStr={data.date}/>
+				</Box>}
 			<Stack spacing={1} sx={{ backgroundColor: '#fff', border: 1, borderColor: 'divider', borderRadius: 2, boxShadow: 1, p: 2 }}>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					<Typography sx={{ fontSize: 14, minWidth: 100 }}>金額 : </Typography>
+					<Typography sx={{ fontSize: 14, minWidth: 80 }}>金額 : </Typography>
 					<TextField
 						value={amount}
 						onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))}
@@ -93,7 +99,7 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 						sx={{ width: 200, ml: 'auto' }} />
 				</Stack>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					<Typography sx={{ fontSize: 14, minWidth: 100 }}>支払者 : </Typography>
+					<Typography sx={{ fontSize: 14, minWidth: 80 }}>支払者 : </Typography>
 					<Select
 						value={paymentPerson}
 						onChange={(e) => setPaymentPerson(e.target.value)}
@@ -105,7 +111,7 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 					</Select>
 				</Stack>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					<Typography sx={{ fontSize: 14, minWidth: 100 }}>カテゴリ : </Typography>
+					<Typography sx={{ fontSize: 14, minWidth: 80 }}>カテゴリ : </Typography>
 					<Select
 						value={category}
 						onChange={(e) => setCategory(e.target.value)}
@@ -117,7 +123,7 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 					</Select>
 				</Stack>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					<Typography sx={{ fontSize: 14, minWidth: 100 }}>支払方法 : </Typography>
+					<Typography sx={{ fontSize: 14, minWidth: 80 }}>支払方法 : </Typography>
 					<Select
 						value={paymentMethod}
 						onChange={(e) => setPaymentMethod(e.target.value)}
@@ -129,7 +135,7 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 					</Select>
 				</Stack>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					<Typography sx={{ fontSize: 14, minWidth: 100 }}>立替有無 : </Typography>
+					<Typography sx={{ fontSize: 14, minWidth: 80 }}>立替有無 : </Typography>
 					<Select
 						value={isAdvance}
 						onChange={(e) => setIsAdvance(e.target.value)}
@@ -141,7 +147,7 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 					</Select>
 				</Stack>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					<Typography sx={{ fontSize: 14, minWidth: 100 }}>購入店 : </Typography>
+					<Typography sx={{ fontSize: 14, minWidth: 80 }}>購入店 : </Typography>
 					<TextField
 						value={purchaseStore}
 						onChange={(e) => setPurchaseStore(e.target.value)}
@@ -151,7 +157,7 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 					/>
 				</Stack>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					<Typography sx={{ fontSize: 14, minWidth: 100 }}>メモ : </Typography>
+					<Typography sx={{ fontSize: 14, minWidth: 80 }}>メモ : </Typography>
 					<TextField
 						value={memo}
 						onChange={(e) => setMemo(e.target.value)}
@@ -162,11 +168,11 @@ export const CreateDataForm = ({ data }: CreateDataFormProps) => {
 				</Stack>
 			</Stack>
 
-			<Button
+			{type === 'create' && <Button
 				variant="contained"
 				loading={loading}
 				sx={{ width: 100, margin: '16px 0px 0px auto !important' }}
-				onClick={savehandle}>追加</Button>
+				onClick={savehandle}>追加</Button>}
 		</Stack>
 	)
 }

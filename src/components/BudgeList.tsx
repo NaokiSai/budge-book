@@ -12,12 +12,18 @@ import { Image } from "@styledComponents/Image"
 import '@css/BudgeList.css'
 // import React from "react"
 import EditIcon from '@mui/icons-material/Edit';
+import { useState } from "react"
+import { MessageDialog } from "./MessageDialog"
+import { EditDialog } from "./EditDialog"
 export const BudgeList = () => {
   const { data, loading } = useData();
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+  const [willData, setWillData] = useState<DataEntry | null>(null)
 
   // 左スワイプ時に表示されるアクション部分
-  const editAction = (
-    <SwipeAction onClick={() => { }}>
+  const editAction = (data: DataEntry) => (
+    <SwipeAction onClick={() => handleEditAction(data)}>
       <Stack
         sx={{
           backgroundColor: 'green',
@@ -40,8 +46,25 @@ export const BudgeList = () => {
     </SwipeAction >
   );
 
-  const deleteAction = (
-    <SwipeAction onClick={() => { }}>
+  const handleEditAction = (data: DataEntry) => {
+    setWillData(data)
+    setEditOpen(true)
+  }
+
+  const handleEditOk = () => {
+    // データの削除を実行
+
+    setWillData(null)
+    setEditOpen(false)
+  }
+
+  const handleEditCancel = () => {
+    setWillData(null)
+    setEditOpen(false)
+  }
+
+  const deleteAction = (data: DataEntry) => (
+    <SwipeAction onClick={() => handleDeleteAction(data)}>
       <Stack
         sx={{
           backgroundColor: 'error.main',
@@ -64,6 +87,23 @@ export const BudgeList = () => {
     </SwipeAction>
   );
 
+  const handleDeleteAction = (data: DataEntry) => {
+    setWillData(data)
+    setDeleteOpen(true)
+  }
+
+  const handleDeleteOk = () => {
+    // データの削除を実行
+
+    setWillData(null)
+    setDeleteOpen(false)
+  }
+
+  const handleDeleteCancel = () => {
+    setWillData(null)
+    setDeleteOpen(false)
+  }
+
   return (
     <Box sx={{ width: 'calc(100% - 32px)', flexGrow: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', px: 2 }}>
       {loading ? (
@@ -78,18 +118,14 @@ export const BudgeList = () => {
         <List sx={{ p: 0 }}>
           <SwipeableList
             fullSwipe={false}
-            // threshold={0.2}
-            type={ListType.IOS} // iOS風の「引っ張って止まる」挙動になります
+            type={ListType.IOS} // iOS風の「引っ張って止まる」挙動に
           >
             {data?.map((entry: DataEntry) => (
               <SwipeableListItem
                 key={entry.id}
-                // trailingActions={trailingActions}
-                leadingActions={editAction}
-                trailingActions={deleteAction}
-                // className='test'
+                leadingActions={editAction(entry)}
+                trailingActions={deleteAction(entry)}
                 threshold={0.1}
-              // maxSwipe={0}
               >
                 <BudgeListItem entry={entry} key={entry.id} />
               </SwipeableListItem>
@@ -102,6 +138,8 @@ export const BudgeList = () => {
           <Image src={noDataUrl} alt="No data" />
         </Stack>
       )}
+      <MessageDialog open={deleteOpen} onCancel={handleDeleteCancel} onOk={handleDeleteOk} willDeleteData={willData} />
+      <EditDialog open={editOpen} onCancel={handleEditCancel} onOk={handleEditOk} willEditData={willData} />
     </Box>
   )
 }
