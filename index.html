@@ -1,13 +1,30 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>budget-book</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/ico" href="/icon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 1. ホーム画面用のアイコン (publicフォルダ直下に置いた画像を指定) -->
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <!-- 2. アプリとして起動（アドレスバーを消す）設定 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- 3. ステータスバー（時計や電池の場所）の色を指定 -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <!-- 4. ホーム画面に表示されるアプリ名 -->
+  <meta name="apple-mobile-web-app-title" content="MyViteApp">
+
+  <!-- 5. manifest.json の読み込み（Android/PC用） -->
+  <link rel="manifest" href="/manifest.json">
+  <title>budget-book</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

@@ -20,7 +20,30 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@src/*": [
+        "./src/*"
+      ],
+      "@pages/*": [
+        "./src/pages/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@type/*": [
+        "./src/type/*"
+      ],
+      "@styledComponents/*": [
+        "./src/styledComponents/*"
+      ],
+      "@service/*": [
+        "./src/service/*"
+      ],
+      "@assets/*": [
+        "./src/assets/*"
+      ],
+    }
   },
   "include": [
     "vite.config.ts"

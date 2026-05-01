@@ -1,21 +1,22 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider } from './AuthContext'
-import Login from './Login'
-import Home from './Home'
-import Add from './Add'
-import Analytics from './Analytics'
-import Settings from './Settings'
-import { PageContainer } from './styledComponents/PageContaner'
-import MenuAppBar from './MenuAppBar'
-import { BottomNavigation } from './BottomNavigation'
-import React from 'react'
+import { AuthProvider } from '@cnxt/AuthContext'
+import { PageContainer } from '@styledComponents/PageContaner'
+import { MenuAppBar } from '@components/MenuAppBar'
+import { BottomNavigation } from '@components/BottomNavigation'
+import React, { lazy } from 'react'
+
+const Login = lazy(() => import('@pages/Login'));
+const Home = lazy(() => import('@pages/Home'));
+const Add = lazy(() => import('@pages/Add'));
+const Analytics = lazy(() => import('@pages/Analytics'));
+const Settings = lazy(() => import('@pages/Settings'));
 
 function App() {
   return (
     <PageContainer>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={
             <React.Fragment>
@@ -42,7 +43,7 @@ function App() {
             <React.Fragment>
               <MenuAppBar />
               <Settings />
-              <MenuAppBar />
+              <BottomNavigation />
             </React.Fragment>
           } />
         </Routes>

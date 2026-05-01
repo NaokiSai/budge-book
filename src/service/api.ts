@@ -1,5 +1,5 @@
 // api.ts (または GASClient をエクスポートするファイル)
-import GASClient from '../gasClient';
+import GASClient from './gasClient';
 
 // 環境変数からURLを取得
 const gasUrl = import.meta.env.VITE_GAS_URL; // Viteの場合

@@ -2,10 +2,10 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
-import './index.css'
+import './main.css'
 import App from './App.tsx'
-import { AppProvider } from './AppContext';
-import { DataProvider } from './DataContext';
+import { AppProvider } from '@cnxt/AppContext';
+import { DataProvider } from '@cnxt/DataContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

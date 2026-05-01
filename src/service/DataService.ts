@@ -1,31 +1,39 @@
 import { gasClient } from "./api";
-import type { FetchDataResponse } from "../type";
+import type { FetchDataResponse } from "@type/type";
+import { jwtDecode } from 'jwt-decode';
 
 export const getDayData = async (date: string): Promise<FetchDataResponse | null> => {
-  // 1. 開始時にローディングをON
-  // setLoadin(true);
 
   try {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
+    // 1. ローカルストレージからIDトークンを取得
+    const idToken = localStorage.getItem('id_token');
+
+    // 2. IDトークンの有無を確認
+    if (!idToken) {
       console.error('ログインが必要です');
-      return { status: 'error', message: 'ログインが必要です', httpCode: 401, user: '' }; // ここでエラーオブジェクトを返すのも一つの方法です
+      return { status: 'error', message: 'ログインが必要です', httpCode: 401, user: '' };
     }
 
-    // 2. 通信実行（await で完了を待つ）
-    const response = await gasClient.fetchData(accessToken, date, 'detail');
+    // 3. IDトークンの期限を確認する
+    const decoded: { exp: number } = jwtDecode(idToken);
+    const currentTime = Date.now() / 1000; // 秒単位
+    // 期限の5分前には「期限切れ」とみなすと安全
+    if (decoded.exp < (currentTime + 300)) {
+      console.error('IDトークンが期限切れです。')
+      return { status: 'error', message: 'IDトークンが期限切れです', httpCode: 419, user: '' };
+    }
 
-    console.log(response)
+    // 4. 通信実行（await で完了を待つ）
+    const response = await gasClient.fetchData(idToken, date, 'detail');
     // GASClient側でエラーが返ってきた場合のチェック
     if (response.status === 'error') {
       throw new Error(response.message);
     }
 
-    // データ更新
+    // 5. データ更新
     if (response.data?.entries) {
       const dataTemp: FetchDataResponse = JSON.parse(JSON.stringify(response)); // これで response を JSON オブジェクトとして扱えるようになります
       return dataTemp;
-      // updateData(dataTemp.data.entries); 
     }
 
   } catch (error) {
@@ -38,31 +46,35 @@ export const getDayData = async (date: string): Promise<FetchDataResponse | null
 };
 
 export const PostData = async (data: string): Promise<FetchDataResponse | null> => {
-  // 1. 開始時にローディングをON
-  // setLoadin(true);
 
   try {
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
+    // 1. ローカルストレージからIDトークンを取得
+    const idToken = localStorage.getItem('id_token');
+
+    // 2. IDトークンの有無を確認
+    if (!idToken) {
       console.error('ログインが必要です');
       return { status: 'error', message: 'ログインが必要です', httpCode: 401, user: '' }; // ここでエラーオブジェクトを返すのも一つの方法です
     }
 
-    // 2. 通信実行（await で完了を待つ）
-    const response = await gasClient.saveData(accessToken, data);
+    // 3. IDトークンの期限を確認する
+    const decoded: { exp: number } = jwtDecode(idToken);
+    const currentTime = Date.now() / 1000; // 秒単位
+    // 期限の5分前には「期限切れ」とみなすと安全
+    if (decoded.exp < (currentTime + 300)) {
+      console.error('IDトークンが期限切れです。')
+      return { status: 'error', message: 'IDトークンが期限切れです', httpCode: 419, user: '' }
+    }
+
+    // 4. 通信実行（await で完了を待つ）
+    const response = await gasClient.saveData(idToken, data);
 
     // GASClient側でエラーが返ってきた場合のチェック
     if (response.status === 'error') {
       throw new Error(response.message);
     }
 
-    // // データ更新
-    // if (response.data?.entries) {
-    //   const dataTemp: FetchDataResponse = JSON.parse(JSON.stringify(response)); // これで response を JSON オブジェクトとして扱えるようになります
-    //   return dataTemp;
-    //   // updateData(dataTemp.data.entries); 
-    // }
-    const dataTemp: FetchDataResponse = JSON.parse(JSON.stringify(response)); // これで response を JSON オブジェクトとして扱えるようになります
+    const dataTemp: FetchDataResponse = JSON.parse(JSON.stringify(response));
     return dataTemp
 
   } catch (error) {
