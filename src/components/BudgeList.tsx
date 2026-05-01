@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { List } from "@styledComponents/List"
-import { SwipeableList, SwipeableListItem, SwipeAction } from "react-swipeable-list"
+import { SwipeableList, SwipeableListItem, SwipeAction, Type as ListType, TrailingActions } from "react-swipeable-list"
 import type { DataEntry } from "@type/type"
 import { BudgeListItemSkelton } from "@components/BudgeListItemSkelton"
 import { BudgeListItem } from "@components/BudgeListItem"
@@ -10,6 +10,7 @@ import 'react-swipeable-list/dist/styles.css'; // スタイルを忘れずにイ
 import noDataUrl from '@assets/NoData.png'
 import { Image } from "@styledComponents/Image"
 import '@css/BudgeList.css'
+// import React from "react"
 
 export const BudgeList = () => {
   const { data, loading } = useData();
@@ -24,13 +25,17 @@ export const BudgeList = () => {
           alignItems: 'center',
           px: 3,
           maxWidth: 64,
+          minWidth: 64,
           height: '100%',
           color: 'white',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          justifyContent: 'center',
+          padding: 0,
+          ml: 1
         }}
       >
         <DeleteIcon />
-        <Typography variant="button" sx={{ ml: 1 }}>削除</Typography>
+        <Typography variant="button" sx={{ fontSize: 12 }}>削除</Typography>
       </Stack>
     </SwipeAction>
   );
@@ -40,19 +45,27 @@ export const BudgeList = () => {
       {loading ? (
         <List>
           {[...Array(3)].map((_, index) => (
-            <BudgeListItemSkelton key={index} index={index}/>
+            <BudgeListItemSkelton key={index} index={index} />
           ))}
         </List>
       ) : null}
       {data.length > 0 ? (
         !loading &&
         <List sx={{ p: 0 }}>
-          <SwipeableList>
+          <SwipeableList
+            fullSwipe={false}
+            // threshold={0.2}
+            type={ListType.IOS} // iOS風の「引っ張って止まる」挙動になります
+          >
             {data?.map((entry: DataEntry) => (
               <SwipeableListItem
                 key={entry.id}
+                // trailingActions={trailingActions}
+                leadingActions={trailingActions}
                 trailingActions={trailingActions}
-                // className='test'
+              // className='test'
+              threshold={0.1}
+              // maxSwipe={0}
               >
                 <BudgeListItem entry={entry} key={entry.id} />
               </SwipeableListItem>
