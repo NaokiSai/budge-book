@@ -1,7 +1,6 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
 import { Button } from '@styledComponents/Button';
 import type { DataEntry } from '@type/type';
-// import { MASTERS } from '@src/service/master';
 import { CreateDataForm } from './CreateDataForm';
 
 interface EditDialogProps {
@@ -12,7 +11,7 @@ interface EditDialogProps {
 }
 
 /**
- * TimeoutDialog
+ * EditDialog
  * @param props 
  * @returns 
  */
