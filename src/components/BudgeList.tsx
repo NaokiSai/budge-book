@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import { List } from "@styledComponents/List"
-import { SwipeableList, SwipeableListItem, SwipeAction, Type as ListType, TrailingActions } from "react-swipeable-list"
+import { SwipeableList, SwipeableListItem, SwipeAction, Type as ListType } from "react-swipeable-list"
 import type { DataEntry } from "@type/type"
 import { BudgeListItemSkelton } from "@components/BudgeListItemSkelton"
 import { BudgeListItem } from "@components/BudgeListItem"
