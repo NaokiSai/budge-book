@@ -10,12 +10,29 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      filename: 'manifest.json', // 名前を .json に固定
+      injectRegister: 'auto',
       manifest: {
         name: 'budget-book',
         short_name: 'budget',
-        start_url: '.', // base設定がある場合、ドット一つで「現在の階層」を指せます
-        scope: './',
+        start_url: '/budge-book/', // 絶対パスでリポジトリ名を指定
+        scope: '/budge-book/',     // 絶対パスでリポジトリ名を指定
         display: 'standalone',
+        background_color: '#ffffff',
+        theme_color: '#ffffff',
+        lang: 'ja',
+        icons: [
+          {
+            src: 'icon-192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'icon-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
       }
     }),
     tsconfigPaths()

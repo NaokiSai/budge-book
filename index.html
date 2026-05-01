@@ -1,23 +1,22 @@
 <head>
   <meta charset="UTF-8" />
-  <!-- 相対パス ./ で統一 -->
   <link rel="icon" type="image/ico" href="./icon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="apple-touch-icon" href="./icon-192.png">
 
-  <!-- 2. 非推奨の警告に対応: mobile-web-app-capable を追加 -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="budget-book">
 
-  <link rel="manifest" href="./manifest.json">
+  <!-- 【重要】手書きの manifest リンクは削除します。プラグインが自動挿入します -->
+  <!-- <link rel="manifest" href="./manifest.json"> -->
+  
   <title>budget-book</title>
 </head>
 
 <body>
   <div id="root"></div>
-  <!-- ここを ./ にするのが重要です -->
-  <script type="module" src="./src/main.tsx"></script>
+  <!-- 【重要】開発時は /src/... でOKです。ビルド時にViteが base を考慮して自動変換します -->
+  <script type="module" src="/src/main.tsx"></script>
 </body>

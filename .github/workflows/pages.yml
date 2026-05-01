@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-        
+
       - name: Check Env
         run: |
           if [ -z "$VITE_GAS_URL" ]; then
@@ -34,6 +34,9 @@ jobs:
           fi
         env:
           VITE_GAS_URL: ${{ secrets.VITE_GAS_URL }}
+      
+      - name: Clean dist
+        run: rm -rf dist # ビルド前に確実に削除
 
       - name: Build
         # ここで環境変数を渡す
