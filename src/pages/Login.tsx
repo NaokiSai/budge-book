@@ -5,7 +5,7 @@ import { Box, Typography } from '@mui/material';
 import type { GasResponse } from '@type/type';
 import { gasClient } from '@service/api';
 import { Image } from '@styledComponents/Image';
-import TopImage from '@assets/TopLogo.png'
+import TopImage from './../assets/TopLogo.png'
 
 export default function Login() {
   const navigate = useNavigate();
