@@ -1,12 +1,15 @@
+import dayjs, { Dayjs } from 'dayjs';
 import React, { createContext, useState, useContext, type ReactNode } from 'react';
 
-type modeType = 'home' | 'add' | 'analytics' | 'setting'
+// type modeType = 'home' | 'add' | 'analytics' | 'setting'
 // 1. コンテキストで扱うデータの型を定義
 interface AppContextType {
   userImage: string;
   updateUserImage: (newImageUrl: string) => void;
-  mode: modeType
-  setMode: (changeMode: modeType) => void
+  selectedDate: Dayjs | undefined
+  setSelectedDate: (d: Dayjs) => void
+  selectedMonth: Dayjs | undefined
+  setSelectedMonth: (d: Dayjs) => void
 }
 
 // 2. 初期値は null でも良いが、型アサーションを使用して型を定義
@@ -19,14 +22,15 @@ interface AppProviderProps {
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [userImage, setUserImage] = useState<string>("https://via.placeholder.com/150");
-  const [mode, setMode] = useState<modeType>('home')
+  const [selectedDate, setSelectedDate] = useState<Dayjs | undefined>(dayjs())
+  const [selectedMonth, setSelectedMonth] = useState<Dayjs | undefined>(dayjs())
 
   const updateUserImage = (newImageUrl: string) => {
     setUserImage(newImageUrl);
   };
 
   return (
-    <AppContext.Provider value={{ userImage, updateUserImage, mode, setMode }}>
+    <AppContext.Provider value={{ userImage, updateUserImage, selectedDate, setSelectedDate, selectedMonth,setSelectedMonth }}>
       {children}
     </AppContext.Provider>
   );

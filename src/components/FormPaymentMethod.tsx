@@ -1,5 +1,6 @@
-import { MenuItem, Select, Stack, Typography } from "@mui/material"
+import { Select, Stack, Typography } from "@mui/material"
 import { MASTERS } from "@src/service/master"
+import { MenuItem } from "@src/styledComponents/MenuItem"
 
 type FormPaymentMethodProps = {
   paymentMethod: string

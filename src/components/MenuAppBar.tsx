@@ -31,7 +31,7 @@ export const MenuAppBar = () => {
           aria-label="menu"
           sx={{ mr: 1 }}
         >
-          <Image src={LogoImage}  sx={{ width: 40 }} />
+          <Image src={LogoImage} sx={{ width: 40, height: 40 }} />
         </IconButton>
         <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontSize: '1rem', color: '#4B2814' }}>
           おうち家計簿

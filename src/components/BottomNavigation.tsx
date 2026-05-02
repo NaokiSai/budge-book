@@ -50,7 +50,7 @@ export const BottomNavigation = () => {
 					onChange={handleChange}
 					sx={{
 						backgroundColor: '#F5F5F5',
-						height: 56,
+						height: 48,
 						'& .MuiBottomNavigationAction-root': {
 							minWidth: 'auto',
 							p: '3px 0',
@@ -61,9 +61,9 @@ export const BottomNavigation = () => {
 						},
 					}}
 				>
-					<BottomNavigationAction disabled={loading} icon={<Image src={HomeImage} sx={{ width: 40 }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={AddImage} sx={{ width: 60 }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={ChartImage} sx={{ width: 60 }} />} />
+					<BottomNavigationAction disabled={loading} icon={<Image src={HomeImage} sx={{ width: 36 }} />} />
+					<BottomNavigationAction disabled={loading} icon={<Image src={AddImage} sx={{ width: 54 }} />} />
+					<BottomNavigationAction disabled={loading} icon={<Image src={ChartImage} sx={{ width: 54 }} />} />
 					{/* <BottomNavigationAction disabled={loading} icon={<Image src={SettingImage} sx={{ width: 60 }} />} /> */}
 				</MuiBottomNavigation>
 			</Paper>

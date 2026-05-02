@@ -4,7 +4,7 @@ import type { DataEntry } from '@type/type';
 import { MASTERS } from '@src/service/master';
 import { useState } from 'react';
 
-interface TimeoutDialogProps {
+interface MessageDialogProps {
   open: boolean;
   onCancel: () => void;
   onOk: () => void
@@ -12,11 +12,11 @@ interface TimeoutDialogProps {
 }
 
 /**
- * TimeoutDialog
+ * MessageDialog
  * @param props 
  * @returns 
  */
-export const MessageDialog = (props: TimeoutDialogProps) => {
+export const MessageDialog = (props: MessageDialogProps) => {
   const { open = false, onCancel, onOk, willDeleteData } = props
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -33,7 +33,7 @@ export const MessageDialog = (props: TimeoutDialogProps) => {
         <Typography sx={{ fontSize: 12 }} gutterBottom>
           データを削除すると、元に戻せません。削除しますか。
         </Typography>
-        <Box sx={{ p: 1, backgroundColor: 'rgba(0,0,0,0.1)', ' > *': { fontSize: 12 } }}>
+        <Box sx={{ p: 1, backgroundColor: 'rgba(0,0,0,0.1)', '& > *': { fontSize: 12 } }}>
           {willDeleteData?.date !== undefined && <Typography>購入日 : {willDeleteData?.date}</Typography>}
           {willDeleteData?.paymentPerson !== undefined && <Typography>購入者 : {MASTERS.getUserName(willDeleteData?.paymentPerson)}</Typography>}
           {willDeleteData?.shop !== undefined && <Typography>購入店 : {willDeleteData?.shop}</Typography>}

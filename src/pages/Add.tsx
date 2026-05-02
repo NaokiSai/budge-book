@@ -27,12 +27,12 @@ const iniData = {
 }
 
 export default function Add() {
-	const { loading, setLoading } = useData();
+	const { loading, setLoading, selectedDate, setSelectedDate } = useData();
 
-	const [selectedDate, setSelectedDate] =
-		useState(new Intl.DateTimeFormat('sv-SE', {
-			timeZone: 'Asia/Tokyo'
-		}).format(new Date()));
+	// const [selectedDate, setSelectedDate] =
+	// 	useState(new Intl.DateTimeFormat('sv-SE', {
+	// 		timeZone: 'Asia/Tokyo'
+	// 	}).format(new Date()));
 	const [amount, setAmount] = useState<string | number>(iniData.amount);
 	const [paymentPerson, setPaymentPerson] = useState(iniData.paymentPerson);
 	const [category, setCategory] = useState(iniData.category);
@@ -60,7 +60,7 @@ export default function Add() {
 		const formattedDate = `${year}${month}${date}${hours}${minutes}${seconds}`;
 
 		const dataTemp: DataEntry = {
-			date: selectedDate,
+			date: selectedDate !== undefined ? selectedDate?.format('YYYY/MM/DD') : '2000-01-01',
 			id: formattedDate,
 			amount,
 			paymentPerson,
@@ -98,7 +98,7 @@ export default function Add() {
 		<Stack sx={{ mx: 'auto' }}>
 			<Stack direction="column" spacing={1} sx={{ width: 'fit-content', pt: 2 }}>
 				<Box sx={{ margin: '4px auto !important', }}>
-					<DatePickerGroup setSelectedDate={setSelectedDate} />
+					<DatePickerGroup setSelectedDate={setSelectedDate} initialDate={selectedDate}/>
 				</Box>
 				<Stack spacing={1} sx={{ backgroundColor: '#fff', border: 1, borderColor: 'divider', borderRadius: 2, boxShadow: 1, p: 2 }}>
 					<FormAmount amount={amount} setAmount={setAmount} />

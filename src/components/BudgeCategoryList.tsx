@@ -23,7 +23,7 @@ export const BudgeCategoryList = ({ data }: { data: ChartDataCategoryTotals[] })
       ) : (
         <List sx={{ px: 2, width: 'calc(100% - 32px)' }}>
           {[...Array(6)].map((_, index) => (
-            <BudgeCategoryListItemSkeleton index={index} />
+            <BudgeCategoryListItemSkeleton key={index} />
           ))}
         </List>
       )}

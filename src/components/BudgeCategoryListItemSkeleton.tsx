@@ -1,9 +1,9 @@
 import { Box, Skeleton, Stack } from '@mui/material';
 import { ListItem } from '@styledComponents/ListItem';
 
-export const BudgeCategoryListItemSkeleton = ({ index }: { index: number }) => {
+export const BudgeCategoryListItemSkeleton = () => {
   return (
-    <ListItem key={index}>
+    <ListItem>
       <Stack direction="row" spacing={2} sx={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
         <Skeleton variant="rectangular" width={36} height={36} sx={{ my: 'auto !important' }} />
         <Stack direction="row" spacing={0.1} sx={{ justifyContent: 'flex-end', width: 'calc(100% - 36px)' }}>

@@ -54,13 +54,13 @@ export const DateCalendarServerRequest = (props: DateCalendarServerRequestProps)
           } as any,
         }}
         sx={() => ({
-          maxHeight: props.loading ? 'unset' : 'fit-content',
+          // maxHeight: props.loading ? 'unset' : 'fit-content',
           ' .Mui-selected': { backgroundColor: '#395D43' },
           ' .MuiPickerDay-root.Mui-selected': { zIndex: -1 },
-          ' .MuiPickersCalendarHeader-root': {
-            maxHeight: 20,
-            minHeight: 20
-          }
+          // ' .MuiPickersCalendarHeader-root': {
+          //   maxHeight: 20,
+          //   minHeight: 20
+          // }
         })}
         onChange={props.onChange}
       />

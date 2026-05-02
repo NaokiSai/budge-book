@@ -1,4 +1,3 @@
-import { SelectYYYYMM } from '@components/SelectYYYYMM';
 import { getData } from '@service/DataService';
 import React, { useEffect, useState } from 'react';
 import { MASTERS } from '@service/master';
@@ -7,23 +6,20 @@ import { BudgeCategoryList } from '@components/BudgeCategoryList';
 import type { ChartDataCategoryTotals } from '@type/type';
 import { TotalAmount } from '@components/TotalAmount';
 import { PieChart } from '@components/PieChart';
+import { Stack } from '@mui/material';
+import { DatePickerGroup } from '@src/components/DatePickerGroup';
+import { TimeoutDialog } from '@src/components/TimeoutDialog';
 
 export default function Analytics() {
-	const { updateData, loading, setLoading } = useData();
+	const { updateData, loading, setLoading, selectedMonth, setSelectedMonth } = useData();
+	
 	const [chartData, setChartData] = useState<ChartDataCategoryTotals[]>([]);
 	const [totalAmount, setTotalAmount] = useState(0);
-	const [selectedMonth, setSelectedMonth] = useState(
-		// 初期値はアプリを開いた日の月を入れる
-		new Intl.DateTimeFormat('sv-SE', {
-			timeZone: 'Asia/Tokyo',
-			year: 'numeric',
-			month: '2-digit',
-		}).format(new Date())
-	);
+	const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
 
 	useEffect(() => {
 		let month: string = ''
-		if (selectedMonth === null) {
+		if (selectedMonth === undefined) {
 			// 初期値はアプリを開いた日の月を入れる
 			month = new Intl.DateTimeFormat('sv-SE', {
 				timeZone: 'Asia/Tokyo',
@@ -31,7 +27,7 @@ export default function Analytics() {
 				month: '2-digit',
 			}).format(new Date())
 		} else {
-			month = selectedMonth
+			month = selectedMonth.format('YYYY-MM')
 		}
 
 		// 日付指定でデータを取得する
@@ -48,13 +44,17 @@ export default function Analytics() {
 
 		try {
 
-			const dataTemp = await getData(month); // これも必要に応じて呼び出してください
-			if (dataTemp !== null && dataTemp.data !== undefined && dataTemp.data.period === month) {
-				updateData(dataTemp.data.entries);
+			const response = await getData(month); // これも必要に応じて呼び出してください
+			if (response?.status === 'error' && response.httpCode === 419) {
+				setOpenTimeoutDialog(true)
+			}
+
+			if (response !== null && response.data !== undefined && response.data.period === month) {
+				updateData(response.data.entries);
 				// ChartDataCategoryTotalsの配列を作成するために、カテゴリごとに金額を合計する
 
 				const categoryTotals: { [key: string]: number } = {};
-				dataTemp.data.entries
+				response.data.entries
 					.filter((entry: any) => !entry.category.includes('ICAT'))
 					.map((entry: any) => {
 						// categoryごとに金額を合計する
@@ -100,10 +100,13 @@ export default function Analytics() {
 
 	return (
 		<React.Fragment>
-			<SelectYYYYMM setSelectedDate={setSelectedMonth} />
+			<Stack sx={{ mt: 2, mx: 'auto' }}>
+				<DatePickerGroup range='month' setSelectedDate={setSelectedMonth} />
+			</Stack>
 			<PieChart loading={loading} chartData={chartData} />
 			<TotalAmount loading={loading} amount={totalAmount} />
 			<BudgeCategoryList data={chartData} />
+			<TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
 		</React.Fragment>
 	)
 }

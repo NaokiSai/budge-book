@@ -12,6 +12,8 @@ import { FormPaymentMethod } from './FormPaymentMethod';
 import { FormIsAdvance } from './FormIsAdvance';
 import { FormPurchaseStore } from './FormPurchaseStore';
 import { FormMemo } from './FormMemo';
+import { useData } from '@src/cnxt/DataContext';
+import { TimeoutDialog } from './TimeoutDialog';
 
 interface UpdateDialogProps {
   open: boolean;
@@ -28,10 +30,11 @@ interface UpdateDialogProps {
  */
 export const UpdateDialog = (props: UpdateDialogProps) => {
   const { open = false, onCancel, willEditData, setDate } = props
+
+  const { selectedDate, setSelectedDate } = useData();
+
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('データを編集してください。')
-
-  const [selectedDate, setSelectedDate] = useState(willEditData.date);
   const [amount, setAmount] = useState(willEditData.amount);
   const [paymentPerson, setPaymentPerson] = useState(willEditData.paymentPerson);
   const [category, setCategory] = useState(willEditData.category);
@@ -39,6 +42,8 @@ export const UpdateDialog = (props: UpdateDialogProps) => {
   const [isAdvance, setIsAdvance] = useState(willEditData.isAdvancePayment);
   const [memo, setMemo] = useState(willEditData.memo);
   const [purchaseStore, setPurchaseStore] = useState(willEditData.shop);
+
+  const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
 
   const handleSave = async () => {
     setLoading(true)
@@ -57,6 +62,9 @@ export const UpdateDialog = (props: UpdateDialogProps) => {
       }
 
       const response = await PostUpdateData(JSON.stringify(dataTemp)); // これも必要に応じて呼び出してください
+      if (response?.status === 'error' && response.httpCode === 419) {
+        setOpenTimeoutDialog(true)
+      }
       if (response?.status === 'error') {
         // setOpenTimeoutDialog(true)
         setMessage('❌データの保存に失敗しました。');
@@ -88,7 +96,7 @@ export const UpdateDialog = (props: UpdateDialogProps) => {
       <DialogContent>
         <Stack direction="column" spacing={1} sx={{ width: 'fit-content', pt: 2 }}>
           <Box sx={{ margin: '4px auto !important', }}>
-            <DatePickerGroup setSelectedDate={setSelectedDate} initialDateStr={willEditData.date} />
+            <DatePickerGroup setSelectedDate={setSelectedDate} initialDate={selectedDate} />
           </Box>
           <Stack spacing={1} sx={{ backgroundColor: '#fff', border: 1, borderColor: 'divider', borderRadius: 2, boxShadow: 1, p: 2 }}>
             <FormAmount amount={amount} setAmount={setAmount} />
@@ -110,6 +118,7 @@ export const UpdateDialog = (props: UpdateDialogProps) => {
           閉じる
         </Button>
       </DialogActions>
+      <TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
     </Dialog>
   );
 };

@@ -31,7 +31,7 @@ export const PieChart = (props: PieChartProps) => {
   const { loading = false, chartData = [] } = props
 
   return (
-    <Box sx={{ width: '100%', px: 2 }}>
+    <Box sx={{ width: 'calc(100% - 24px)', padding: '0px 8px 0px 16px', mb: 1 }}>
       {!loading ? (
         chartData.length > 0 ?
           <MuiPieChart

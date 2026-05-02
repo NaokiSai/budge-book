@@ -8,10 +8,10 @@ import { Dayjs } from 'dayjs';
 import { TimeoutDialog } from '@components/TimeoutDialog';
 
 function Home() {
-  const { updateData, setLoading, loading } = useData();
+  const { updateData, setLoading, loading, selectedDate, setSelectedDate } = useData();
   const requestAbortController = useRef<AbortController | null>(null);
   const [highlightedDays, setHighlightedDays] = useState<number[]>([]);
-  const [value, setValue] = useState<Dayjs | null>(null);
+  // const [value, setValue] = useState<Dayjs | null>(null);
   const [totalAmount, setTotalAmount] = useState<number>(0)
   const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
 
@@ -48,14 +48,14 @@ function Home() {
   // useeffectでデータを取得する
   useEffect(() => {
     let date: string = '';
-    if (value === null) {
+    if (selectedDate === null || selectedDate === undefined) {
       // 日付計算（sv-SE フォーマットは YYYY-MM-DD になる）
       date = new Intl.DateTimeFormat('sv-SE', {
         timeZone: 'Asia/Tokyo'
       }).format(new Date());
     } else {
       // 1. MUI(Dayjs)からJSのDateオブジェクトに変換
-      const targetDate = value.toDate();
+      const targetDate = selectedDate.toDate();
 
       // 2. 日本時間で YYYY-MM-DD 形式にする (sv-SEロケールを利用)
       date = new Intl.DateTimeFormat('sv-SE', {
@@ -65,12 +65,13 @@ function Home() {
 
     // 日付を指定してデータを取得する
     getHomeData(date);
-  }, [value]);
+  }, [selectedDate]);
 
   const handleDateChange = async (newValue: Dayjs | null) => {
     if (newValue && newValue.isValid()) {
       updateData([]);
-      setValue(newValue);
+      // setValue(newValue);
+      setSelectedDate(newValue)
     }
   };
 
@@ -80,19 +81,20 @@ function Home() {
     }
     setHighlightedDays([]);
     updateData([]);
-    setValue(date)
+    // setValue(date)
+    setSelectedDate(date)
   };
 
   return (
     <React.Fragment>
       <DateCalendarServerRequest
         loading={loading}
-        value={value}
+        value={selectedDate}
         onChange={handleDateChange}
         onMonthChange={handleMonthChange}
         highlightedDays={highlightedDays} />
       <TotalAmount loading={loading} amount={totalAmount} />
-      <BudgeList setDate={setValue} />
+      <BudgeList setDate={setSelectedDate} />
       <TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
     </React.Fragment>
   )
