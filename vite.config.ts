@@ -2,11 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from "vite-plugin-pwa"
 import tsconfigPaths from 'vite-tsconfig-paths';
+import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
   base: '/budge-book/',
   plugins: [
+    tsconfigPaths(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -34,9 +36,14 @@ export default defineConfig({
           }
         ]
       }
-    }),
-    tsconfigPaths()
+    })
   ],
+  resolve: {
+    alias: {
+      // tsconfigPathsとは別に、画像用にこれを追記します
+      '@assets': path.resolve(__dirname, 'src/assets'),
+    },
+  },
   build: {
     rollupOptions: {
       output: {
