@@ -8,7 +8,7 @@ import { useData } from '@cnxt/DataContext'
 import HomeImage from '@assets/Home.png'
 import AddImage from '@assets/Add.png'
 import ChartImage from '@assets/Chart.png'
-import SettingImage from '@assets/Setting.png'
+// import SettingImage from '@assets/Setting.png'
 import { Image } from '@styledComponents/Image'
 
 export const BottomNavigation = () => {
@@ -61,10 +61,10 @@ export const BottomNavigation = () => {
 						},
 					}}
 				>
-					<BottomNavigationAction disabled={loading} icon={<Image src={HomeImage}  sx={{ width: 40 }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={AddImage}  sx={{ width: 60 }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={ChartImage}  sx={{ width: 60 }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={SettingImage}  sx={{ width: 60 }} />} />
+					<BottomNavigationAction disabled={loading} icon={<Image src={HomeImage} sx={{ width: 40 }} />} />
+					<BottomNavigationAction disabled={loading} icon={<Image src={AddImage} sx={{ width: 60 }} />} />
+					<BottomNavigationAction disabled={loading} icon={<Image src={ChartImage} sx={{ width: 60 }} />} />
+					{/* <BottomNavigationAction disabled={loading} icon={<Image src={SettingImage} sx={{ width: 60 }} />} /> */}
 				</MuiBottomNavigation>
 			</Paper>
 			<Box sx={{ minHeight: 56 }} />

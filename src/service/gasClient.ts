@@ -105,11 +105,11 @@ class GASClient {
   /**
    * データを取得（キャッシュ対応版）
    */
-  async fetchData(id_token: string, date: string, granularity: GranularityLevel = 'detail'): Promise<FetchDataResponse> {
+  async fetchData(id_token: string, date: string, granularity: GranularityLevel = 'detail', timestamp: number, forceFetch: boolean = false): Promise<FetchDataResponse> {
     const cacheKey = `${date}_${granularity}`;
 
-    // 1. キャッシュがあれば即座に返す（通信ゼロ）
-    if (this.dataCache.has(cacheKey)) {
+    // forceFetch が false、かつキャッシュがある場合のみキャッシュを返す
+    if (!forceFetch && this.dataCache.has(cacheKey)) {
       return this.dataCache.get(cacheKey)!;
     }
 
@@ -123,6 +123,7 @@ class GASClient {
       url.searchParams.append('id_token', id_token);
       url.searchParams.append('date', date);
       url.searchParams.append('granularity', granularity);
+      url.searchParams.append('timestamp', timestamp.toString());
 
       const response = await fetch(url.toString(), {
         method: 'GET',
@@ -150,11 +151,12 @@ class GASClient {
    * データを保存（データセット）
    * POSTリクエストもリダイレクト追跡を必須とする
    */
-  async saveData(id_token: string, data: any): Promise<SaveDataResponse> {
+  async PostData(id_token: string, data: any, timestamp: number, option: 'saveUpdate' | 'saveEdit'): Promise<SaveDataResponse> {
     try {
       const url = new URL(this.gasUrl);
-      url.searchParams.append('option', 'save');
+      url.searchParams.append('option', option);
       url.searchParams.append('id_token', id_token);
+      url.searchParams.append('timestamp', timestamp.toString());
 
       const response = await fetch(url.toString(), {
         method: 'POST',
@@ -169,6 +171,7 @@ class GASClient {
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
       const responseData = await response.json();
+
       return responseData;
     } catch (error) {
       console.error('🔴 データ保存エラー:', error);

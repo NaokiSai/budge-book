@@ -45,7 +45,7 @@ export default function Login() {
             }
           }}
           onError={() => {
-            console.log('Login Failed');
+            console.error('Login Failed');
           }}
         />
       </Box>

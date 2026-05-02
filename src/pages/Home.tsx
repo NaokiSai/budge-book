@@ -3,7 +3,7 @@ import { BudgeList } from '@components/BudgeList';
 import { TotalAmount } from '@components/TotalAmount';
 import React, { useEffect, useRef, useState } from 'react';
 import { useData } from '@cnxt/DataContext';
-import { getDayData } from '@service/DataService';
+import { getData } from '@service/DataService';
 import { Dayjs } from 'dayjs';
 import { TimeoutDialog } from '@components/TimeoutDialog';
 
@@ -15,16 +15,15 @@ function Home() {
   const [totalAmount, setTotalAmount] = useState<number>(0)
   const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
 
-  const getData = async (date: string) => {
+  const getHomeData = async (date: string) => {
     // 1. 開始時にローディングをON
     setLoading(true);
 
     try {
-      const dataTemp = await getDayData(date); // これも必要に応じて呼び出してください
+      const dataTemp = await getData(date); // これも必要に応じて呼び出してください
 
       if (dataTemp?.status === 'error' && dataTemp.httpCode === 419) {
         setOpenTimeoutDialog(true)
-
       }
 
       // 2. 取得したデータが存在し、かつ条件に一致する場合のみ更新を実行
@@ -65,7 +64,7 @@ function Home() {
     }
 
     // 日付を指定してデータを取得する
-    getData(date);
+    getHomeData(date);
   }, [value]);
 
   const handleDateChange = async (newValue: Dayjs | null) => {
@@ -93,7 +92,7 @@ function Home() {
         onMonthChange={handleMonthChange}
         highlightedDays={highlightedDays} />
       <TotalAmount loading={loading} amount={totalAmount} />
-      <BudgeList />
+      <BudgeList setDate={setValue} />
       <TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
     </React.Fragment>
   )

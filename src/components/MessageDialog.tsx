@@ -2,6 +2,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box } fr
 import { Button } from '@styledComponents/Button';
 import type { DataEntry } from '@type/type';
 import { MASTERS } from '@src/service/master';
+import { useState } from 'react';
 
 interface TimeoutDialogProps {
   open: boolean;
@@ -17,9 +18,12 @@ interface TimeoutDialogProps {
  */
 export const MessageDialog = (props: TimeoutDialogProps) => {
   const { open = false, onCancel, onOk, willDeleteData } = props
+  const [loading, setLoading] = useState<boolean>(false)
 
   const handleNavigate = () => {
+    setLoading(true)
     onOk();
+    setLoading(false)
   };
 
   return (
@@ -29,7 +33,7 @@ export const MessageDialog = (props: TimeoutDialogProps) => {
         <Typography sx={{ fontSize: 12 }} gutterBottom>
           データを削除すると、元に戻せません。削除しますか。
         </Typography>
-        <Box sx={{ p: 1, backgroundColor: 'rgba(0,0,0,0.1)', '>*': { fontSize: 12 } }}>
+        <Box sx={{ p: 1, backgroundColor: 'rgba(0,0,0,0.1)', ' > *': { fontSize: 12 } }}>
           {willDeleteData?.date !== undefined && <Typography>購入日 : {willDeleteData?.date}</Typography>}
           {willDeleteData?.paymentPerson !== undefined && <Typography>購入者 : {MASTERS.getUserName(willDeleteData?.paymentPerson)}</Typography>}
           {willDeleteData?.shop !== undefined && <Typography>購入店 : {willDeleteData?.shop}</Typography>}
@@ -38,8 +42,8 @@ export const MessageDialog = (props: TimeoutDialogProps) => {
           {willDeleteData?.isAdvancePayment !== undefined && <Typography>{MASTERS.getAdvancePaymentName(willDeleteData?.isAdvancePayment)}</Typography>}
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleNavigate}>
+      <DialogActions sx={{ px: 3, pb: 2 }}>
+        <Button onClick={handleNavigate} loading={loading}>
           削除
         </Button>
         <Button onClick={onCancel} sx={{ backgroundColor: 'rgba(0, 0, 0, 0.15)' }}>

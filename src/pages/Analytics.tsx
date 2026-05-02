@@ -1,5 +1,5 @@
 import { SelectYYYYMM } from '@components/SelectYYYYMM';
-import { getDayData } from '@service/DataService';
+import { getData } from '@service/DataService';
 import React, { useEffect, useState } from 'react';
 import { MASTERS } from '@service/master';
 import { useData } from '@cnxt/DataContext';
@@ -35,11 +35,11 @@ export default function Analytics() {
 		}
 
 		// 日付指定でデータを取得する
-		getData(month);
+		getAnalyticsData(month);
 
 	}, [selectedMonth]);
 
-	const getData = async (month: string) => {
+	const getAnalyticsData = async (month: string) => {
 
 		setChartData([])
 		setTotalAmount(0)
@@ -48,7 +48,7 @@ export default function Analytics() {
 
 		try {
 
-			const dataTemp = await getDayData(month); // これも必要に応じて呼び出してください
+			const dataTemp = await getData(month); // これも必要に応じて呼び出してください
 			if (dataTemp !== null && dataTemp.data !== undefined && dataTemp.data.period === month) {
 				updateData(dataTemp.data.entries);
 				// ChartDataCategoryTotalsの配列を作成するために、カテゴリごとに金額を合計する

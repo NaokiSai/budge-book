@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DatePickerGroup } from '@components/DatePickerGroup'
 import { Stack, TextField, MenuItem, Select, Typography, Box } from '@mui/material'
 import { MASTERS } from '@service/master'
 import type { DataEntry } from '@type/type'
-import { PostData } from '@service/DataService'
-import { useData } from '@cnxt/DataContext'
-import { Button } from '@styledComponents/Button'
+// import { PostData } from '@service/DataService'
+// import { useData } from '@cnxt/DataContext'
+// import { Button } from '@styledComponents/Button'
 
 type CreateDataFormProps = {
 	// ここに必要なpropsを定義してください
 	data: DataEntry; // 例: 家計簿の明細データを受け取るためのprops
 	type: 'create' | 'change'
+	setData: (data: DataEntry) => void
 };
 
 /**
@@ -18,8 +19,8 @@ type CreateDataFormProps = {
  * @param param0 
  * @returns 
  */
-export const CreateDataForm = ({ data, type }: CreateDataFormProps) => {
-	const { loading, setLoading } = useData();
+export const CreateDataForm = ({ data, type, setData }: CreateDataFormProps) => {
+	console.log(data)
 	const [selectedDate, setSelectedDate] =
 		useState(data.id === 'new' ? new Intl.DateTimeFormat('sv-SE', {
 			timeZone: 'Asia/Tokyo'
@@ -32,25 +33,10 @@ export const CreateDataForm = ({ data, type }: CreateDataFormProps) => {
 	const [memo, setMemo] = useState(data.memo);
 	const [purchaseStore, setPurchaseStore] = useState(data.shop);
 
-	const savehandle = async () => {
-
-		setLoading(true)
-		const now = new Date();
-
-		// 各要素を取得
-		const year = now.getFullYear();
-		const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0から始まるため+1
-		const date = String(now.getDate()).padStart(2, '0');
-		const hours = String(now.getHours()).padStart(2, '0');
-		const minutes = String(now.getMinutes()).padStart(2, '0');
-		const seconds = String(now.getSeconds()).padStart(2, '0');
-
-		// 連結して 202604251451 の形式にして、IDとして利用する
-		const formattedDate = `${year}${month}${date}${hours}${minutes}${seconds}`;
-
-		const data: DataEntry = {
+	useEffect(() => {
+		const dataTemp = {
 			date: selectedDate,
-			id: formattedDate,
+			id: data.id,
 			amount,
 			paymentPerson,
 			category,
@@ -60,27 +46,21 @@ export const CreateDataForm = ({ data, type }: CreateDataFormProps) => {
 			shop: purchaseStore
 		}
 
-		try {
-			await PostData(JSON.stringify(data)); // これも必要に応じて呼び出してください
+		console.log(data)
+		
+		setData(dataTemp)
 
-		} catch (error) {
-			console.error('データ取得に失敗しました:', error);
-			// 必要ならここでユーザーにトースト通知などを出す
-		} finally {
-			// 3. 成功・失敗に関わらず、最後に必ずローディングをOFF
-			setLoading(false);
-		}
-	};
+	}, [selectedDate, amount, paymentPerson, category, paymentMethod, isAdvance, memo, purchaseStore]);
 
 	return (
-		<Stack direction="column" spacing={1} sx={{ width: 'fit-content', mx: 'auto', pt: 2 }}>
+		<Stack direction="column" spacing={1} sx={{ width: 'fit-content', pt: 2 }}>
 			{type === 'create' &&
 				<Box sx={{ margin: '4px auto !important', }}>
 					<DatePickerGroup setSelectedDate={setSelectedDate} />
 				</Box>}
 			{type === 'change' &&
 				<Box sx={{ margin: '4px auto !important', }}>
-					<DatePickerGroup setSelectedDate={setSelectedDate} initialDateStr={data.date}/>
+					<DatePickerGroup setSelectedDate={setSelectedDate} initialDateStr={data.date} />
 				</Box>}
 			<Stack spacing={1} sx={{ backgroundColor: '#fff', border: 1, borderColor: 'divider', borderRadius: 2, boxShadow: 1, p: 2 }}>
 				<Stack sx={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -167,12 +147,6 @@ export const CreateDataForm = ({ data, type }: CreateDataFormProps) => {
 					/>
 				</Stack>
 			</Stack>
-
-			{type === 'create' && <Button
-				variant="contained"
-				loading={loading}
-				sx={{ width: 100, margin: '16px 0px 0px auto !important' }}
-				onClick={savehandle}>追加</Button>}
 		</Stack>
 	)
 }

@@ -14,8 +14,14 @@ import '@css/BudgeList.css'
 import EditIcon from '@mui/icons-material/Edit';
 import { useState } from "react"
 import { MessageDialog } from "./MessageDialog"
-import { EditDialog } from "./EditDialog"
-export const BudgeList = () => {
+import { UpdateDialog } from "./UpdateDialog"
+import type { Dayjs } from "dayjs"
+
+type BudgeListProps = {
+  setDate: (date: Dayjs) => void
+}
+
+export const BudgeList = (props: BudgeListProps) => {
   const { data, loading } = useData();
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
@@ -53,7 +59,6 @@ export const BudgeList = () => {
 
   const handleEditOk = () => {
     // データの削除を実行
-
     setWillData(null)
     setEditOpen(false)
   }
@@ -94,7 +99,6 @@ export const BudgeList = () => {
 
   const handleDeleteOk = () => {
     // データの削除を実行
-
     setWillData(null)
     setDeleteOpen(false)
   }
@@ -139,7 +143,7 @@ export const BudgeList = () => {
         </Stack>
       )}
       <MessageDialog open={deleteOpen} onCancel={handleDeleteCancel} onOk={handleDeleteOk} willDeleteData={willData} />
-      <EditDialog open={editOpen} onCancel={handleEditCancel} onOk={handleEditOk} willEditData={willData} />
+      {willData !== null && <UpdateDialog open={editOpen} onCancel={handleEditCancel} onOk={handleEditOk} willEditData={willData} setDate={props.setDate} />}
     </Box>
   )
 }
