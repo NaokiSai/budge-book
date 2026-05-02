@@ -13,7 +13,7 @@ export default defineConfig({
       filename: 'manifest.json', // 名前を .json に固定
       injectRegister: 'auto',
       manifest: {
-        name: 'budget-book',
+        name: 'おうち家計簿',
         short_name: 'budget',
         start_url: '/budge-book/', // 絶対パスでリポジトリ名を指定
         scope: '/budge-book/',     // 絶対パスでリポジトリ名を指定
