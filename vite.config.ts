@@ -16,7 +16,7 @@ export default defineConfig({
       injectRegister: 'auto',
       manifest: {
         name: 'おうち家計簿',
-        short_name: 'budget',
+        short_name: 'おうち家計簿',
         start_url: '/budge-book/', // 絶対パスでリポジトリ名を指定
         scope: '/budge-book/',     // 絶対パスでリポジトリ名を指定
         display: 'standalone',
