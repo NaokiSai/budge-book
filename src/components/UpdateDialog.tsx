@@ -93,8 +93,8 @@ export const UpdateDialog = (props: UpdateDialogProps) => {
   return (
     <Dialog open={open} sx={{ width: 'fit-content', ' .MuiDialog-container': { width: '100vw' }, ' .MuiDialog-paper': { mx: 'auto' } }}>
       <DialogTitle>✏️ 選択データの編集</DialogTitle>
-      <DialogContent>
-        <Stack direction="column" spacing={1} sx={{ width: 'fit-content', pt: 2 }}>
+      <DialogContent sx={{ pb: 1 }}>
+        <Stack direction="column" spacing={1} sx={{ width: 'fit-content' }}>
           <Box sx={{ margin: '4px auto !important', }}>
             <DatePickerGroup setSelectedDate={setSelectedDate} initialDate={selectedDate} />
           </Box>
