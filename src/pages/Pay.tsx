@@ -1,10 +1,10 @@
 import { Typography, Box, List, ListItem, ListItemText, Switch } from '@mui/material'
 
-export default function Settings() {
+export default function Pay() {
 	return (
 		<Box sx={{ p: 2 }}>
 			<Typography variant="h6" component="h6" gutterBottom>
-				Settings Comming Sonn
+				Pay Comming Sonn
 			</Typography>
 			<Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
 				Manage your application preferences

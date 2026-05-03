@@ -10,6 +10,7 @@ const Home = lazy(() => import('@pages/Home'));
 const Add = lazy(() => import('@pages/Add'));
 const Analytics = lazy(() => import('@pages/Analytics'));
 const Settings = lazy(() => import('@pages/Settings'));
+const Pay = lazy(() => import('@pages/Pay'));
 
 function App() {
   return (
@@ -25,6 +26,13 @@ function App() {
               <BottomNavigation />
             </React.Fragment>
           } />
+          <Route path="/analytics" element={
+            <React.Fragment>
+              <MenuAppBar />
+              <Analytics />
+              <BottomNavigation />
+            </React.Fragment>
+          } />
           <Route path="/add" element={
             <React.Fragment>
               <MenuAppBar />
@@ -32,10 +40,10 @@ function App() {
               <BottomNavigation />
             </React.Fragment>
           } />
-          <Route path="/analytics" element={
+          <Route path="/pay" element={
             <React.Fragment>
               <MenuAppBar />
-              <Analytics />
+              <Pay />
               <BottomNavigation />
             </React.Fragment>
           } />
