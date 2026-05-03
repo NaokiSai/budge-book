@@ -6,7 +6,6 @@ import { gasClient } from '@service/api';
 import { Image } from '@styledComponents/Image';
 import TopImage from './../assets/TopLogo.png'
 import { useState } from 'react';
-import { Dayjs } from 'dayjs';
 
 export default function Login() {
   const navigate = useNavigate();
