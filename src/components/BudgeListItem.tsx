@@ -1,9 +1,9 @@
-import { Badge, Box, Stack, Typography } from '@mui/material';
+import { Badge, Stack, Typography } from '@mui/material';
 import type { DataEntry } from '@type/type';
 import { MASTERS } from '@service/master';
 import { ListItem } from '@styledComponents/ListItem';
 import { Image } from '@styledComponents/Image';
-import PCAT001 from '@assets/PCAT001.png'
+const BASE = import.meta.env.BASE_URL;
 
 export const BudgeListItem = ({ entry }: { entry: DataEntry }) => {
   return (
@@ -18,14 +18,11 @@ export const BudgeListItem = ({ entry }: { entry: DataEntry }) => {
               lineHeight: '8px',
               height: 'fit-content',
               padding: '2px 4px',
-              display: entry.isAdvancePayment === 'PISADV002' ? 'unset': 'none'
+              display: entry.isAdvancePayment === 'PISADV002' ? 'unset' : 'none'
             }
           }}>
-          {entry.category === 'PCAT001' ?
-            <Image src={PCAT001} sx={{ width: 36, height: 36, backgroundColor: '#F5F5F5', borderRadius: 1, my: 'auto !important' }} />
-            :
-            <Box sx={{ width: 36, height: 36, backgroundColor: '#F5F5F5', borderRadius: 1, my: 'auto !important' }} />
-          }
+          <Image src={`${BASE}images/${entry.category}.png`} sx={{ width: 36, height: 36, backgroundColor: '#F5F5F5', borderRadius: 1, my: 'auto !important' }} />
+
         </Badge>
         <Stack direction="column" spacing={0.1} sx={{ width: '100%' }}>
           <Stack direction="row" sx={{ width: '100%' }}>

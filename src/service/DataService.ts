@@ -141,3 +141,26 @@ export const PostUpdateData = async (data: string): Promise<FetchDataResponse | 
 
   return null; // データがない場合は null を返す
 };
+
+export const CheckDedlineToken = () => {
+
+  // ローカルストレージからIDトークンを取得
+  const idToken = localStorage.getItem('id_token');
+
+  if (!idToken) {
+    console.error('ログインが必要です');
+    return { status: 'error', message: 'ログインが必要です', httpCode: 401, user: '' }; // ここでエラーオブジェクトを返すのも一つの方法です
+  }
+
+  // IDトークンの期限を確認する
+  const decoded: { exp: number } = jwtDecode(idToken);
+  const currentTime = Date.now() / 1000; // 秒単位
+
+  // 期限の5分前には「期限切れ」とみなすと安全
+  if (decoded.exp < (currentTime + 300)) {
+    console.error('IDトークンが期限切れです。')
+    return { status: 'error', message: 'IDトークンが期限切れです', httpCode: 419, user: '' }
+  }
+
+  return { status: 'success', message: '', httpCode: 200, user: '' }
+}

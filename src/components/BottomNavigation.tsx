@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import Paper from '@mui/material/Paper'
 import MuiBottomNavigation from '@mui/material/BottomNavigation'
 import BottomNavigationAction from '@mui/material/BottomNavigationAction'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { useData } from '@cnxt/DataContext'
 import HomeImage from '@assets/Home.png'
@@ -10,12 +10,15 @@ import AddImage from '@assets/Add.png'
 import ChartImage from '@assets/Chart.png'
 // import SettingImage from '@assets/Setting.png'
 import { Image } from '@styledComponents/Image'
+import { CheckDedlineToken } from '@src/service/DataService'
+import { TimeoutDialog } from './TimeoutDialog'
 
 export const BottomNavigation = () => {
 	const { loading } = useData();
 	const navigate = useNavigate()
 	const location = useLocation()
-	const [value, setValue] = React.useState(0);
+	const [value, setValue] = useState(0);
+	const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
 
 	useEffect(() => {
 		setValue(getValueFromPath(location.pathname))
@@ -30,15 +33,21 @@ export const BottomNavigation = () => {
 	}
 
 	const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-		setValue(newValue)
-		if (newValue === 0) {
-			navigate('/home')
-		} else if (newValue === 1) {
-			navigate('/add')
-		} else if (newValue === 2) {
-			navigate('/analytics')
-		} else if (newValue === 3) {
-			navigate('/settings')
+
+		const result = CheckDedlineToken();
+		if (result.status === 'success') {
+			setValue(newValue)
+			if (newValue === 0) {
+				navigate('/home')
+			} else if (newValue === 1) {
+				navigate('/add')
+			} else if (newValue === 2) {
+				navigate('/analytics')
+			} else if (newValue === 3) {
+				navigate('/settings')
+			}
+		} else {
+
 		}
 	}
 
@@ -68,6 +77,7 @@ export const BottomNavigation = () => {
 				</MuiBottomNavigation>
 			</Paper>
 			<Box sx={{ minHeight: 56 }} />
+			<TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
 		</React.Fragment>
 	)
 }
