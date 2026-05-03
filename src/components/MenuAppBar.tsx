@@ -5,13 +5,14 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { useUser } from '@cnxt/AppContext';
 import { Image } from '@styledComponents/Image';
 import LogoImage from '@assets/Logo.png'
+import { Divider, Stack } from '@mui/material';
 
 export const MenuAppBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const { userImage } = useUser();
+  const savedUser = localStorage.getItem('user');
+  const savedUserName = localStorage.getItem('user_name');
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -36,18 +37,19 @@ export const MenuAppBar = () => {
         <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontSize: '1rem', color: '#4B2814' }}>
           おうち家計簿
         </Typography>
-        {userImage && (
+        {savedUser && (
           <div>
             <IconButton
-              size="small"
+              size='large'
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleMenu}
               color="inherit"
+              sx={{ p: 0.25 }}
             >
               {/* <AccountCircle fontSize="small" /> */}
-              <img src={userImage} alt="User Avatar" style={{ width: 24, height: 24, borderRadius: '50%' }} />
+              <img src={savedUser} alt="User Avatar" style={{ width: 30, height: 30, borderRadius: '50%' }} />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -64,8 +66,12 @@ export const MenuAppBar = () => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <Stack direction='row' sx={{ padding: 1 }}>
+                <img src={savedUser} alt="User Avatar" style={{ width: 60, height: 60, borderRadius: '50%' }} />
+                <Typography sx={{ mx: 1, my: 'auto', fontSize: 20 }}>{savedUserName}</Typography>
+              </Stack>
+              <Divider variant="middle"/>
+              <MenuItem onClick={handleClose}>ログアウト</MenuItem>
             </Menu>
           </div>
         )}

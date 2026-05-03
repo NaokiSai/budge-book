@@ -38,6 +38,10 @@ export default defineConfig({
       }
     })
   ],
+  define: {
+    // package.jsonのバージョンを環境変数として定義
+    'import.meta.env.PACKAGE_VERSION': JSON.stringify(process.env.npm_package_version),
+  },
   resolve: {
     alias: {
       // tsconfigPathsとは別に、画像用にこれを追記します

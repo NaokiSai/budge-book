@@ -4,8 +4,6 @@ import React, { createContext, useState, useContext, type ReactNode } from 'reac
 // type modeType = 'home' | 'add' | 'analytics' | 'setting'
 // 1. コンテキストで扱うデータの型を定義
 interface AppContextType {
-  userImage: string;
-  updateUserImage: (newImageUrl: string) => void;
   selectedDate: Dayjs | undefined
   setSelectedDate: (d: Dayjs) => void
   selectedMonth: Dayjs | undefined
@@ -21,16 +19,11 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [userImage, setUserImage] = useState<string>("https://via.placeholder.com/150");
   const [selectedDate, setSelectedDate] = useState<Dayjs | undefined>(dayjs())
   const [selectedMonth, setSelectedMonth] = useState<Dayjs | undefined>(dayjs())
 
-  const updateUserImage = (newImageUrl: string) => {
-    setUserImage(newImageUrl);
-  };
-
   return (
-    <AppContext.Provider value={{ userImage, updateUserImage, selectedDate, setSelectedDate, selectedMonth,setSelectedMonth }}>
+    <AppContext.Provider value={{ selectedDate, setSelectedDate, selectedMonth,setSelectedMonth }}>
       {children}
     </AppContext.Provider>
   );

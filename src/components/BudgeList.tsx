@@ -1,5 +1,4 @@
 import { Box, Stack, Typography } from "@mui/material"
-import { List } from "@styledComponents/List"
 import { SwipeableList, SwipeableListItem, SwipeAction, Type as ListType } from "react-swipeable-list"
 import type { DataEntry } from "@type/type"
 import { BudgeListItemSkelton } from "@components/BudgeListItemSkelton"
@@ -10,12 +9,12 @@ import 'react-swipeable-list/dist/styles.css'; // スタイルを忘れずにイ
 import noDataUrl from '@assets/NoData.png'
 import { Image } from "@styledComponents/Image"
 import '@css/BudgeList.css'
-// import React from "react"
 import EditIcon from '@mui/icons-material/Edit';
 import { useState } from "react"
 import { MessageDialog } from "./MessageDialog"
 import { UpdateDialog } from "./UpdateDialog"
 import type { Dayjs } from "dayjs"
+import { List } from "@src/styledComponents/List"
 
 type BudgeListProps = {
   setDate: (date: Dayjs) => void
