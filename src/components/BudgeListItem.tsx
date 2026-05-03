@@ -22,7 +22,6 @@ export const BudgeListItem = ({ entry }: { entry: DataEntry }) => {
             }
           }}>
           <Image src={`${BASE}images/${entry.category}.png`} sx={{ width: 36, height: 36, backgroundColor: '#F5F5F5', borderRadius: 1, my: 'auto !important' }} />
-
         </Badge>
         <Stack direction="column" spacing={0.1} sx={{ width: '100%' }}>
           <Stack direction="row" sx={{ width: '100%' }}>
