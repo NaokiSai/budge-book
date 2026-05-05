@@ -5,12 +5,14 @@ import { BudgeCategoryListItem } from "@components/BudgeCategoryListItem"
 import { useData } from "@cnxt/DataContext";
 import { BudgeCategoryListItemSkeleton } from "@components/BudgeCategoryListItemSkeleton";
 
+const SKELETON_NUMBER = 6
+
 export const BudgeCategoryList = ({ data }: { data: ChartDataCategoryTotals[] }) => {
-  const { loading } = useData();
+  const { loadingCtx } = useData();
 
   return (
     <Box sx={{ flexGrow: 1, overflow: 'auto', width: '100%' }}>
-      {!loading ? (
+      {!loadingCtx ? (
         data.length > 0 ?
           <List sx={{ py: 0, px: 2, width: 'calc(100% - 32px)' }}>
             {data?.map((data: ChartDataCategoryTotals) => (
@@ -22,7 +24,7 @@ export const BudgeCategoryList = ({ data }: { data: ChartDataCategoryTotals[] })
           </Stack>
       ) : (
         <List sx={{ px: 2, width: 'calc(100% - 32px)' }}>
-          {[...Array(6)].map((_, index) => (
+          {[...Array(SKELETON_NUMBER)].map((_, index) => (
             <BudgeCategoryListItemSkeleton key={index} />
           ))}
         </List>

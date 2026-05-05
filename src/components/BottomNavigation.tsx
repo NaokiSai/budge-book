@@ -15,7 +15,8 @@ import { CheckDedlineToken } from '@src/service/DataService'
 import { TimeoutDialog } from './TimeoutDialog'
 
 export const BottomNavigation = () => {
-	const { loading } = useData();
+	const { loadingCtx } = useData();
+
 	const navigate = useNavigate()
 	const location = useLocation()
 	const [value, setValue] = useState(0);
@@ -64,7 +65,7 @@ export const BottomNavigation = () => {
 					sx={{
 						overflow: 'visible',
 						backgroundColor: '#F5F5F5',
-						height: 48,
+						height: 64,
 						'& .MuiBottomNavigationAction-root': {
 							minWidth: 'auto',
 							p: '3px 0',
@@ -75,11 +76,11 @@ export const BottomNavigation = () => {
 						},
 					}}
 				>
-					<BottomNavigationAction disabled={loading} icon={<Image src={HomeImage} sx={{ width: 36 }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={ChartImage} sx={{ width: 54 }} />} />
-					<BottomNavigationAction disabled={loading} sx={{ paddingBottom: '12px!important' }} icon={<Image src={AddImage} sx={{ width: 54, backgroundColor: 'rgba(248, 214, 124, 0.8)', borderRadius: '50%' }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={PayImage} sx={{ width: 50 }} />} />
-					<BottomNavigationAction disabled={loading} icon={<Image src={SettingImage} sx={{ width: 60 }} />} />
+					<BottomNavigationAction disabled={loadingCtx} icon={<Image src={HomeImage} sx={{ width: 36 }} />} />
+					<BottomNavigationAction disabled={loadingCtx} icon={<Image src={ChartImage} sx={{ width: 54 }} />} />
+					<BottomNavigationAction disabled={loadingCtx} sx={{ paddingBottom: '12px!important' }} icon={<Image src={AddImage} sx={{ width: 68, backgroundColor: 'rgba(248, 214, 124, 0.8)', borderRadius: '50%' }} />} />
+					<BottomNavigationAction disabled={loadingCtx} icon={<Image src={PayImage} sx={{ width: 50 }} />} />
+					<BottomNavigationAction disabled={loadingCtx} icon={<Image src={SettingImage} sx={{ width: 60 }} />} />
 				</MuiBottomNavigation>
 			</Paper>
 			<Box sx={{ minHeight: 56 }} />

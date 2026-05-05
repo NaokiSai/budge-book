@@ -9,7 +9,7 @@ export const BudgeCategoryListItem = ({ data }: { data: ChartDataCategoryTotals 
   return (
     <ListItem key={data.id} sx={{ width: '100%' }}>
       <Stack direction="row" spacing={0} sx={{ width: '100%' }}>
-        <Image src={`${BASE}images/${data.catid}.png`} sx={{ width: 36, height: 36, backgroundColor: '#F5F5F5', borderRadius: 1, my: 'auto !important' }} />
+        <Image src={`${BASE}images/${data.catid}.png`} sx={{ width: 36, height: 36, backgroundImageorderRadius: 1, my: 'auto !important' }} />
         <Stack direction="column" spacing={0.1} sx={{ flexGrow: 1, justifyContent: 'center', width: 'calc(100% - 36px)' }}>
           <Stack direction="row" sx={{ width: '100%' }}>
             <Typography sx={{ fontSize: 12, ml: 2, mr: 'auto' }}>

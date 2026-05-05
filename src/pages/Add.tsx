@@ -23,7 +23,7 @@ const INITIAL_FORM_STATE = {
 };
 
 export default function Add() {
-	const { loading, setLoading, selectedDate, setSelectedDate } = useData();
+	const { loadingCtx, setLoadingCtx, selectedDateCtx, setSelectedDateCtx } = useData();
 	const [formState, setFormState] = useState(INITIAL_FORM_STATE);
 	const [openTimeoutDialog, setOpenTimeoutDialog] = useState(false);
 
@@ -33,11 +33,11 @@ export default function Add() {
 	}, []);
 
 	const handleSave = async () => {
-		setLoading(true);
+		setLoadingCtx(true);
 
 		// IDと日付の整形
 		const id = dayjs().format("YYYYMMDDHHmmss");
-		const dateStr = selectedDate?.format("YYYY-MM-DD") ?? "2000-01-01";
+		const dateStr = selectedDateCtx?.format("YYYY-MM-DD") ?? "2000-01-01";
 
 		const payload: DataEntry = {
 			id,
@@ -65,7 +65,7 @@ export default function Add() {
 		} catch (error) {
 			console.error("データの保存に失敗しました:", error);
 		} finally {
-			setLoading(false);
+			setLoadingCtx(false);
 		}
 	};
 
@@ -74,8 +74,8 @@ export default function Add() {
 			<Stack direction="column" spacing={1} sx={{ width: "fit-content", mx: "auto" }}>
 				<Box sx={{ mb: 1 }}>
 					<DatePickerGroup
-						setSelectedDate={setSelectedDate}
-						initialDate={selectedDate}
+						setSelectedDate={setSelectedDateCtx}
+						initialDate={selectedDateCtx}
 					/>
 				</Box>
 					<DataFormFields formState={formState} updateField={updateField} />
@@ -83,7 +83,7 @@ export default function Add() {
 
 			<Button
 				variant="contained"
-				loading={loading}
+				loading={loadingCtx}
 				sx={{ width: 100, ml: "auto", mt: 2 }}
 				onClick={handleSave}
 			>

@@ -152,7 +152,7 @@ class GASClient {
    * データを保存（データセット）
    * POSTリクエストもリダイレクト追跡を必須とする
    */
-  async PostData(id_token: string, data: any, timestamp: number, option: 'saveUpdate' | 'saveEdit'): Promise<SaveDataResponse> {
+  async PostData(id_token: string, data: any, timestamp: number, option: 'saveUpdate' | 'saveEdit' | 'remove'): Promise<SaveDataResponse> {
     try {
       const url = new URL(this.gasUrl);
       url.searchParams.append('option', option);
@@ -175,7 +175,7 @@ class GASClient {
 
       return responseData;
     } catch (error) {
-      console.error('🔴 データ保存エラー:', error);
+      console.error('🔴', error);
       return { status: 'error', message: String(error), httpCode: 0 };
     }
   }

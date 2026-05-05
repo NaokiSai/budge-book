@@ -3,22 +3,22 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Typography, Stack, B
 import { Button } from '@styledComponents/Button';
 import type { DataEntry } from '@type/type';
 import { PostUpdateData } from '@src/service/DataService';
-import dayjs, { Dayjs } from 'dayjs';
 import { DatePickerGroup } from './DatePickerGroup';
 import { useData } from '@src/cnxt/DataContext';
-import { TimeoutDialog } from './TimeoutDialog';
 import { DataFormFields } from './DataFormFields';
+import type { Dayjs } from 'dayjs';
 
 interface UpdateDialogProps {
   open: boolean;
   onCancel: () => void;
   onOk: () => void;
   willEditData: DataEntry;
-  setDate: (date: Dayjs) => void;
+  setOpenTimeoutDialog: (flag: boolean) => void
+  setSelectedDate: (d: Dayjs) => void
 }
 
-export const UpdateDialog = ({ open, onCancel, willEditData, setDate }: UpdateDialogProps) => {
-  const { selectedDate, setSelectedDate } = useData();
+export const UpdateDialog = ({ open, onCancel, willEditData, setOpenTimeoutDialog }: UpdateDialogProps) => {
+  const { selectedDateCtx } = useData();
 
   // 1. 状態管理をオブジェクトに集約
   const [formState, setFormState] = useState({
@@ -30,10 +30,9 @@ export const UpdateDialog = ({ open, onCancel, willEditData, setDate }: UpdateDi
     purchaseStore: willEditData.shop,
     memo: willEditData.memo,
   });
-
+  const [selectedTempDate, setSelectedTempDate] = useState<Dayjs | undefined>(selectedDateCtx)
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('データを編集してください。');
-  const [openTimeoutDialog, setOpenTimeoutDialog] = useState(false);
 
   // 2. ダイアログが開いた時に最新の Props を反映させる
   useEffect(() => {
@@ -61,7 +60,7 @@ export const UpdateDialog = ({ open, onCancel, willEditData, setDate }: UpdateDi
     try {
       const payload: DataEntry = {
         ...willEditData, // 元のIDなどを維持
-        date: selectedDate?.format('YYYY-MM-DD') ?? '2000-01-01',
+        date: selectedTempDate?.format('YYYY-MM-DD') ?? '2000-01-01',
         amount: formState.amount,
         paymentPerson: formState.paymentPerson,
         category: formState.category,
@@ -88,7 +87,6 @@ export const UpdateDialog = ({ open, onCancel, willEditData, setDate }: UpdateDi
 
   const handleClose = () => {
     setMessage('');
-    setDate(dayjs(selectedDate));
     onCancel();
   };
 
@@ -105,7 +103,7 @@ export const UpdateDialog = ({ open, onCancel, willEditData, setDate }: UpdateDi
       <DialogContent sx={{ pb: 1 }}>
         <Stack spacing={1} sx={{ width: 'fit-content', mx: 'auto' }}>
           <Box sx={{ py: 0.5 }}>
-            <DatePickerGroup setSelectedDate={setSelectedDate} initialDate={selectedDate} />
+            <DatePickerGroup setSelectedDate={setSelectedTempDate} initialDate={selectedDateCtx} />
           </Box>
           <DataFormFields formState={formState} updateField={updateField} />
         </Stack>
@@ -126,8 +124,6 @@ export const UpdateDialog = ({ open, onCancel, willEditData, setDate }: UpdateDi
           閉じる
         </Button>
       </DialogActions>
-
-      <TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
     </Dialog>
   );
 };

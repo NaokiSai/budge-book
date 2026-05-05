@@ -15,13 +15,17 @@ import { MessageDialog } from "./MessageDialog"
 import { UpdateDialog } from "./UpdateDialog"
 import type { Dayjs } from "dayjs"
 import { List } from "@src/styledComponents/List"
+import dayjs from "dayjs"
 
 type BudgeListProps = {
-  setDate: (date: Dayjs) => void
+  setSelectedDate: (date: Dayjs) => void
+  setOpenTimeoutDialog: (flag: boolean) => void
 }
 
 export const BudgeList = (props: BudgeListProps) => {
-  const { data, loading } = useData();
+  const { setSelectedDate, setOpenTimeoutDialog } = props
+  const { dataCtx, loadingCtx, selectedDateCtx } = useData();
+
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [willData, setWillData] = useState<DataEntry | null>(null)
@@ -60,6 +64,9 @@ export const BudgeList = (props: BudgeListProps) => {
     // データの削除を実行
     setWillData(null)
     setEditOpen(false)
+
+    // 日時を再設定して、再読み込みをする
+    setSelectedDate(dayjs(selectedDateCtx))
   }
 
   const handleEditCancel = () => {
@@ -100,6 +107,9 @@ export const BudgeList = (props: BudgeListProps) => {
     // データの削除を実行
     setWillData(null)
     setDeleteOpen(false)
+
+    // 日時を再設定して、再読み込みをする
+    setSelectedDate(dayjs(selectedDateCtx))
   }
 
   const handleDeleteCancel = () => {
@@ -109,21 +119,21 @@ export const BudgeList = (props: BudgeListProps) => {
 
   return (
     <Box sx={{ width: 'calc(100% - 32px)', flexGrow: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', px: 2 }}>
-      {loading ? (
+      {loadingCtx ? (
         <List>
           {[...Array(3)].map((_, index) => (
             <BudgeListItemSkelton key={index} index={index} />
           ))}
         </List>
       ) : null}
-      {data.length > 0 ? (
-        !loading &&
+      {dataCtx.length > 0 ? (
+        !loadingCtx &&
         <List sx={{ p: 0 }}>
           <SwipeableList
             fullSwipe={false}
             type={ListType.IOS} // iOS風の「引っ張って止まる」挙動に
           >
-            {data?.map((entry: DataEntry) => (
+            {dataCtx?.map((entry: DataEntry) => (
               <SwipeableListItem
                 key={entry.id}
                 leadingActions={editAction(entry)}
@@ -136,13 +146,26 @@ export const BudgeList = (props: BudgeListProps) => {
           </SwipeableList>
         </List>
       ) : (
-        !loading &&
+        !loadingCtx &&
         <Stack direction='column' spacing={1} sx={{ width: 'fit-content', m: 'auto' }}>
           <Image src={noDataUrl} alt="No data" />
         </Stack>
       )}
-      <MessageDialog open={deleteOpen} onCancel={handleDeleteCancel} onOk={handleDeleteOk} willDeleteData={willData} />
-      {willData !== null && <UpdateDialog open={editOpen} onCancel={handleEditCancel} onOk={handleEditOk} willEditData={willData} setDate={props.setDate} />}
+      {willData !== null &&
+        <MessageDialog
+          open={deleteOpen}
+          onCancel={handleDeleteCancel}
+          onOk={handleDeleteOk}
+          willDeleteData={willData}
+          setOpenTimeoutDialog={setOpenTimeoutDialog} />}
+      {willData !== null &&
+        <UpdateDialog
+          open={editOpen}
+          onCancel={handleEditCancel}
+          onOk={handleEditOk}
+          willEditData={willData}
+          setSelectedDate={setSelectedDate}
+          setOpenTimeoutDialog={setOpenTimeoutDialog} />}
     </Box>
   )
 }

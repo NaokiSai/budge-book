@@ -4,6 +4,7 @@ import { ListItem } from '@styledComponents/ListItem';
 type BudgeListItemSkeltonProps = {
   index: number
 } 
+
 export const BudgeListItemSkelton = (props: BudgeListItemSkeltonProps) => {
   return (
     <ListItem key={props.index}>

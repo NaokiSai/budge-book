@@ -3,6 +3,10 @@ import type { DataEntry } from '@type/type';
 import { MASTERS } from '@service/master';
 import { ListItem } from '@styledComponents/ListItem';
 import { Image } from '@styledComponents/Image';
+
+/**
+ * 定数
+ */
 const BASE = import.meta.env.BASE_URL;
 
 export const BudgeListItem = ({ entry }: { entry: DataEntry }) => {

@@ -8,16 +8,15 @@ import { Dayjs } from 'dayjs';
 import { TimeoutDialog } from '@components/TimeoutDialog';
 
 function Home() {
-  const { updateData, setLoading, loading, selectedDate, setSelectedDate } = useData();
+  const { setDataCtx, setLoadingCtx, loadingCtx, selectedDateCtx, setSelectedDateCtx } = useData();
   const requestAbortController = useRef<AbortController | null>(null);
   const [highlightedDays, setHighlightedDays] = useState<number[]>([]);
-  // const [value, setValue] = useState<Dayjs | null>(null);
   const [totalAmount, setTotalAmount] = useState<number>(0)
   const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
 
   const getHomeData = async (date: string) => {
     // 1. 開始時にローディングをON
-    setLoading(true);
+    setLoadingCtx(true);
 
     try {
       const dataTemp = await getData(date); // これも必要に応じて呼び出してください
@@ -29,7 +28,7 @@ function Home() {
       // 2. 取得したデータが存在し、かつ条件に一致する場合のみ更新を実行
       if (dataTemp?.data?.period === date) {
         // 取得した生データを入れる
-        updateData(dataTemp.data.entries);
+        setDataCtx(dataTemp.data.entries);
         // 生データから計算した合計金額を入れる
         const totalAmountTemp = dataTemp.data.entries?.reduce((sum, entry) => sum + Number(entry.amount), 0);
         setTotalAmount(totalAmountTemp)
@@ -37,25 +36,24 @@ function Home() {
         setHighlightedDays(dataTemp.data.uniqueDates.map((d) => parseInt(d)));
       }
     } catch (error) {
-      console.error('データ取得に失敗しました:', error);
       // 必要ならここでユーザーにトースト通知などを出す
     } finally {
       // 3. 成功・失敗に関わらず、最後に必ずローディングをOFF
-      setLoading(false);
+      setLoadingCtx(false);
     }
   };
 
   // useeffectでデータを取得する
   useEffect(() => {
     let date: string = '';
-    if (selectedDate === null || selectedDate === undefined) {
+    if (selectedDateCtx === null || selectedDateCtx === undefined) {
       // 日付計算（sv-SE フォーマットは YYYY-MM-DD になる）
       date = new Intl.DateTimeFormat('sv-SE', {
         timeZone: 'Asia/Tokyo'
       }).format(new Date());
     } else {
       // 1. MUI(Dayjs)からJSのDateオブジェクトに変換
-      const targetDate = selectedDate.toDate();
+      const targetDate = selectedDateCtx.toDate();
 
       // 2. 日本時間で YYYY-MM-DD 形式にする (sv-SEロケールを利用)
       date = new Intl.DateTimeFormat('sv-SE', {
@@ -65,36 +63,40 @@ function Home() {
 
     // 日付を指定してデータを取得する
     getHomeData(date);
-  }, [selectedDate]);
+
+  }, [selectedDateCtx]);
 
   const handleDateChange = async (newValue: Dayjs | null) => {
     if (newValue && newValue.isValid()) {
-      updateData([]);
-      // setValue(newValue);
-      setSelectedDate(newValue)
+      // 現状のリクエストをキャンセル
+      if (requestAbortController.current) {
+        requestAbortController.current.abort();
+      }
+      setDataCtx([]);
+      setSelectedDateCtx(newValue)
     }
   };
 
   const handleMonthChange = (date: Dayjs) => {
+    // 現状のリクエストをキャンセル
     if (requestAbortController.current) {
       requestAbortController.current.abort();
     }
     setHighlightedDays([]);
-    updateData([]);
-    // setValue(date)
-    setSelectedDate(date)
+    setDataCtx([]);
+    setSelectedDateCtx(date)
   };
 
   return (
     <React.Fragment>
       <DateCalendarServerRequest
-        loading={loading}
-        value={selectedDate}
+        loading={loadingCtx}
+        value={selectedDateCtx}
         onChange={handleDateChange}
         onMonthChange={handleMonthChange}
         highlightedDays={highlightedDays} />
-      <TotalAmount loading={loading} amount={totalAmount} />
-      <BudgeList setDate={setSelectedDate} />
+      <TotalAmount loading={loadingCtx} amount={totalAmount} />
+      <BudgeList setSelectedDate={setSelectedDateCtx} setOpenTimeoutDialog={setOpenTimeoutDialog} />
       <TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
     </React.Fragment>
   )

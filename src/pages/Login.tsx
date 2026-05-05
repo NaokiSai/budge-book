@@ -23,6 +23,7 @@ export default function Login() {
 
     setIsProcessing(true);
     setMessage('認証中...')
+
     try {
       // API呼び出し
       const result = await gasClient.login(idToken);
@@ -41,8 +42,6 @@ export default function Login() {
       navigate('/home');
 
     } catch (error: any) {
-      // console.error('Login Error:', error);
-      // alert(`ログインに失敗しました: ${error.message}`);
       setMessage('認証できませんでした。')
     } finally {
       setIsProcessing(false);

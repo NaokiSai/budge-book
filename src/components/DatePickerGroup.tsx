@@ -19,20 +19,6 @@ type DatePickerGroupProps = {
 export const DatePickerGroup = (props: DatePickerGroupProps) => {
   const { range = 'date', setSelectedDate, initialDate } = props
 
-  // 2. 分割して数値に変換
-  // const parts = initialDateStr !== undefined ? initialDateStr.split('-') : '';
-  // const initialYear = initialDateStr !== undefined ? Number(parts[0]) : dayjs().year();  // 2024
-  // const initialMonth = initialDateStr !== undefined ? Number(parts[1]) : dayjs().month() + 1; // 6
-  // const initialDay = initialDateStr !== undefined ? Number(parts[2]) : dayjs().date();   // 1
-
-  // const [year, setYear] = useState<number>(Number((initialDate as Dayjs).format('YYYY')));
-  // const [month, setMonth] = useState<number>(Number((initialDate as Dayjs).format('MM'))); // 1-12
-  // const [day, setDay] = useState<number>(Number(initialDate?.format('DD')));
-  // const [maxDays, setMaxDays] = useState<Number>(31);
-
-  // initialDateがDayjs型であることを前提としますが、
-  // undefinedなどの可能性も考慮してオプショナルチェイニング(?.)を使います。
-
   const [year, setYear] = useState<number>(
     Number(initialDate?.format('YYYY') ?? dayjs().format('YYYY'))
   );
@@ -62,9 +48,6 @@ export const DatePickerGroup = (props: DatePickerGroupProps) => {
     }
 
     setSelectedDate(dayjs(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`))
-    // range === 'year' && setSelectedDate(`${year}`); // 例: 2024 の形式で親コンポーネントに日付を渡す
-    // range === 'month' && setSelectedDate(`${year}-${month.toString().padStart(2, '0')}`); // 例: 2024-06 の形式で親コンポーネントに日付を渡す
-    // range === 'date' && setSelectedDate(`${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`); // 例: 2024-06-01 の形式で親コンポーネントに日付を渡す
   }, [year, month, day]);
 
   return (

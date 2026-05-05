@@ -11,7 +11,7 @@ import { DatePickerGroup } from '@src/components/DatePickerGroup';
 import { TimeoutDialog } from '@src/components/TimeoutDialog';
 
 export default function Analytics() {
-	const { updateData, loading, setLoading, selectedMonth, setSelectedMonth } = useData();
+	const { setDataCtx, loadingCtx, setLoadingCtx, selectedMonthCtx, setSelectedMonthCtx } = useData();
 	
 	const [chartData, setChartData] = useState<ChartDataCategoryTotals[]>([]);
 	const [totalAmount, setTotalAmount] = useState(0);
@@ -19,7 +19,7 @@ export default function Analytics() {
 
 	useEffect(() => {
 		let month: string = ''
-		if (selectedMonth === undefined) {
+		if (selectedMonthCtx === undefined) {
 			// 初期値はアプリを開いた日の月を入れる
 			month = new Intl.DateTimeFormat('sv-SE', {
 				timeZone: 'Asia/Tokyo',
@@ -27,20 +27,22 @@ export default function Analytics() {
 				month: '2-digit',
 			}).format(new Date())
 		} else {
-			month = selectedMonth.format('YYYY-MM')
+			month = selectedMonthCtx.format('YYYY-MM')
 		}
 
 		// 日付指定でデータを取得する
 		getAnalyticsData(month);
 
-	}, [selectedMonth]);
+	}, [selectedMonthCtx]);
 
 	const getAnalyticsData = async (month: string) => {
 
+		// 表示データを初期化
 		setChartData([])
 		setTotalAmount(0)
+
 		// 1. 開始時にローディングをON
-		setLoading(true);
+		setLoadingCtx(true);
 
 		try {
 
@@ -50,7 +52,7 @@ export default function Analytics() {
 			}
 
 			if (response !== null && response.data !== undefined && response.data.period === month) {
-				updateData(response.data.entries);
+				setDataCtx(response.data.entries);
 				// ChartDataCategoryTotalsの配列を作成するために、カテゴリごとに金額を合計する
 
 				const categoryTotals: { [key: string]: number } = {};
@@ -85,26 +87,23 @@ export default function Analytics() {
 				});
 
 				setChartData(sortedData);
-				setLoading(false)
 
 			}
 		} catch (error) {
-			setLoading(false)
-
 			// 必要ならここでユーザーにトースト通知などを出す
 		} finally {
 			// 3. 成功・失敗に関わらず、最後に必ずローディングをOFF
-			setLoading(false);
+			setLoadingCtx(false);
 		}
 	};
 
 	return (
 		<React.Fragment>
 			<Stack sx={{ mt: 2, mx: 'auto' }}>
-				<DatePickerGroup range='month' setSelectedDate={setSelectedMonth} />
+				<DatePickerGroup range='month' setSelectedDate={setSelectedMonthCtx} />
 			</Stack>
-			<PieChart loading={loading} chartData={chartData} />
-			<TotalAmount loading={loading} amount={totalAmount} />
+			<PieChart loading={loadingCtx} chartData={chartData} />
+			<TotalAmount loading={loadingCtx} amount={totalAmount} />
 			<BudgeCategoryList data={chartData} />
 			<TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
 		</React.Fragment>
