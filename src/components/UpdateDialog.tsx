@@ -17,7 +17,7 @@ interface UpdateDialogProps {
   setSelectedDate: (d: Dayjs) => void
 }
 
-export const UpdateDialog = ({ open, onCancel, willEditData, setOpenTimeoutDialog }: UpdateDialogProps) => {
+export const UpdateDialog = ({ open, onOk, onCancel, willEditData, setOpenTimeoutDialog, setSelectedDate }: UpdateDialogProps) => {
   const { selectedDateCtx } = useData();
 
   // 1. 状態管理をオブジェクトに集約
@@ -77,6 +77,8 @@ export const UpdateDialog = ({ open, onCancel, willEditData, setOpenTimeoutDialo
         setMessage('❌ データの保存に失敗しました。');
       } else if (response?.status === 'success') {
         setMessage('✨ データを保存しました。');
+        if (selectedTempDate) setSelectedDate(selectedTempDate)
+        onOk();
       }
     } catch (error) {
       setMessage('❌ データの保存に失敗しました。');

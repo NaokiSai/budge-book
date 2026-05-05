@@ -18,7 +18,7 @@ import { List } from "@src/styledComponents/List"
 import dayjs from "dayjs"
 
 type BudgeListProps = {
-  setSelectedDate: (date: Dayjs) => void
+  setSelectedDate: (date: Dayjs | undefined) => void
   setOpenTimeoutDialog: (flag: boolean) => void
 }
 
