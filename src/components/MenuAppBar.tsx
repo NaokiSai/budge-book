@@ -6,13 +6,23 @@ import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { Image } from '@styledComponents/Image';
-import LogoImage from '@assets/Logo.png'
+import LogoImage from '@assets/Logo.png';
 import { Divider, Stack } from '@mui/material';
 
 export const MenuAppBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const savedUser = localStorage.getItem('user');
+  const savedUser = localStorage.getItem('user'); // 画像URL
   const savedUserName = localStorage.getItem('user_name');
+
+  // --- 追加対策: キャッシュ回避のためのURL加工 ---
+  const userImageUrl = React.useMemo(() => {
+    if (!savedUser) return '';
+    // すでに data: 形式（Base64）ならそのまま、URLならタイムスタンプを付与
+    if (savedUser.startsWith('data:')) return savedUser;
+    
+    const connector = savedUser.includes('?') ? '&' : '?';
+    return `${savedUser}${connector}t=${new Date().getTime()}`;
+  }, [savedUser]);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -32,11 +42,14 @@ export const MenuAppBar = () => {
           aria-label="menu"
           sx={{ mr: 1 }}
         >
-          <Image src={LogoImage} sx={{ width: 40, height: 40 }} referrerPolicy="no-referrer"/>
+          {/* ロゴ画像にも念のため追加 */}
+          <Image src={LogoImage} sx={{ width: 40, height: 40 }} referrerPolicy="no-referrer" />
         </IconButton>
+        
         <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, fontSize: '1rem', color: '#4B2814' }}>
           おうち家計簿
         </Typography>
+
         {savedUser && (
           <div>
             <IconButton
@@ -48,8 +61,13 @@ export const MenuAppBar = () => {
               color="inherit"
               sx={{ p: 0.25 }}
             >
-              {/* <AccountCircle fontSize="small" /> */}
-              <img src={savedUser} alt="User Avatar" style={{ width: 30, height: 30, borderRadius: '50%' }} />
+              <img 
+                src={userImageUrl} 
+                alt="User Avatar" 
+                // 【対策】リファラーを送らない設定
+                referrerPolicy="no-referrer" 
+                style={{ width: 30, height: 30, borderRadius: '50%' }} 
+              />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -67,7 +85,13 @@ export const MenuAppBar = () => {
               onClose={handleClose}
             >
               <Stack direction='row' sx={{ padding: 1 }}>
-                <img src={savedUser} alt="User Avatar" style={{ width: 60, height: 60, borderRadius: '50%' }} />
+                <img 
+                  src={userImageUrl} 
+                  alt="User Avatar" 
+                  // 【対策】リファラーを送らない設定
+                  referrerPolicy="no-referrer" 
+                  style={{ width: 60, height: 60, borderRadius: '50%' }} 
+                />
                 <Typography sx={{ mx: 1, my: 'auto', fontSize: 20 }}>{savedUserName}</Typography>
               </Stack>
               <Divider variant="middle"/>
