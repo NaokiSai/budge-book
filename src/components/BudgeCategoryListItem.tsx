@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import type { ChartDataCategoryTotals, DataEntry } from '@type/type';
+import type { ChartDataCategoryTotals } from '@type/type';
 import { MASTERS } from '@service/master';
 import { ListItem } from '@styledComponents/ListItem';
 import { Image } from '@styledComponents/Image';
