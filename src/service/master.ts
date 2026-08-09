@@ -8,28 +8,28 @@ export const MASTERS = {
     const found = master?.find(item => item.id === String(id));
     return found ? found.name : String(id); // 見つからない場合はIDそのものを返す
   },
-  
+
   // 各コード別の変換関数（便利用）
   getUserName(id: string | number): string {
     return MASTERS.getMasterName('USER', id);
   },
-  
+
   getPaymentMethodName(id: string | number): string {
     return MASTERS.getMasterName('PAYMENT_METHOD', id);
   },
-  
+
   getPaymentCategoryName(id: string | number): string {
     return MASTERS.getMasterName('PAYMENT_CATEGORIES', id);
   },
-  
+
   getIncomeCategoryName(id: string | number): string {
     return MASTERS.getMasterName('INCOME_CATEGORIES', id);
   },
-  
+
   getIncomMethodName(id: string | number): string {
     return MASTERS.getMasterName('INCOME_METHOD', id);
   },
-  
+
   getAdvancePaymentName(id: string | number): string {
     return MASTERS.getMasterName('PAYMENT_IS_ADVANCE', id);
   },
@@ -70,6 +70,7 @@ export const MASTERS = {
   PAYMENT_IS_ADVANCE: [
     { id: "PISADV001", name: "立替なし", keyword: [] },
     { id: "PISADV002", name: "立替あり", keyword: [] },
+    { id: "PISADV003", name: "立替あり", keyword: [] },
   ],
 
   // 支払カテゴリの定義

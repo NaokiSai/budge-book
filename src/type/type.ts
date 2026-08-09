@@ -53,7 +53,7 @@ type FetchDataResponse = {
 
 /** チャート用のカテゴリ別合計データ */
 type ChartDataCategoryTotals = {
-  id: number;
+  // id: number;
   catid: string
   value: number;
   label: string;

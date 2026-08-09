@@ -8,7 +8,7 @@ import { Dayjs } from 'dayjs';
 import { TimeoutDialog } from '@components/TimeoutDialog';
 
 function Home() {
-  const { setDataCtx, setLoadingCtx, loadingCtx, selectedDateCtx, setSelectedDateCtx } = useData();
+  const { dataCtx, setDataCtx, setLoadingCtx, loadingCtx, selectedDateCtx, setSelectedDateCtx } = useData();
   const requestAbortController = useRef<AbortController | null>(null);
   const [highlightedDays, setHighlightedDays] = useState<number[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0)
@@ -96,7 +96,7 @@ function Home() {
         onMonthChange={handleMonthChange}
         highlightedDays={highlightedDays} />
       <TotalAmount loading={loadingCtx} amount={totalAmount} />
-      <BudgeList setSelectedDate={setSelectedDateCtx} setOpenTimeoutDialog={setOpenTimeoutDialog} />
+      <BudgeList setSelectedDate={setSelectedDateCtx} setOpenTimeoutDialog={setOpenTimeoutDialog} inputData={dataCtx}/>
       <TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
     </React.Fragment>
   )

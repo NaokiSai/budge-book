@@ -20,11 +20,12 @@ import dayjs from "dayjs"
 type BudgeListProps = {
   setSelectedDate: (date: Dayjs) => void
   setOpenTimeoutDialog: (flag: boolean) => void
+  inputData: DataEntry[]
 }
 
 export const BudgeList = (props: BudgeListProps) => {
-  const { setSelectedDate, setOpenTimeoutDialog } = props
-  const { dataCtx, loadingCtx, selectedDateCtx } = useData();
+  const { setSelectedDate, setOpenTimeoutDialog, inputData } = props
+  const { loadingCtx, selectedDateCtx } = useData();
 
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
@@ -126,14 +127,14 @@ export const BudgeList = (props: BudgeListProps) => {
           ))}
         </List>
       ) : null}
-      {dataCtx.length > 0 ? (
+      {inputData.length > 0 ? (
         !loadingCtx &&
         <List sx={{ p: 0 }}>
           <SwipeableList
             fullSwipe={false}
             type={ListType.IOS} // iOS風の「引っ張って止まる」挙動に
           >
-            {dataCtx?.map((entry: DataEntry) => (
+            {inputData?.map((entry: DataEntry) => (
               <SwipeableListItem
                 key={entry.id}
                 leadingActions={editAction(entry)}

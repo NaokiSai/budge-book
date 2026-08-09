@@ -6,13 +6,13 @@ import { BudgeCategoryList } from '@components/BudgeCategoryList';
 import type { ChartDataCategoryTotals } from '@type/type';
 import { TotalAmount } from '@components/TotalAmount';
 import { PieChart } from '@components/PieChart';
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { DatePickerGroup } from '@src/components/DatePickerGroup';
 import { TimeoutDialog } from '@src/components/TimeoutDialog';
 
 export default function Analytics() {
 	const { setDataCtx, loadingCtx, setLoadingCtx, selectedMonthCtx, setSelectedMonthCtx } = useData();
-	
+
 	const [chartData, setChartData] = useState<ChartDataCategoryTotals[]>([]);
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
@@ -74,7 +74,7 @@ export default function Analytics() {
 
 				// categoryTotalsオブジェクトをChartDataCategoryTotalsの配列に変換する
 				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, index) => ({
-					id: index,
+					// id: index,
 					catid: key,
 					value: categoryTotals[key],
 					label: MASTERS.getPaymentCategoryName(key), // ここでカテゴリIDを名前に変換
@@ -83,7 +83,7 @@ export default function Analytics() {
 
 				const sortedData = [...temp].sort((a, b) => {
 					// b - a で降順（大きい順）
-					return (b.value as number) - (a.value as number);
+					return (b.rate as number) - (a.rate as number);
 				});
 
 				setChartData(sortedData);
@@ -98,14 +98,17 @@ export default function Analytics() {
 	};
 
 	return (
-		<React.Fragment>
+		<Box sx={{
+			position: 'relative', // 絶対配置の基準
+			overflow: 'hidden',    // ドロワーのはみ出しをカット
+		}}>
 			<Stack sx={{ mt: 2, mx: 'auto' }}>
 				<DatePickerGroup range='month' setSelectedDate={setSelectedMonthCtx} />
 			</Stack>
 			<PieChart loading={loadingCtx} chartData={chartData} />
 			<TotalAmount loading={loadingCtx} amount={totalAmount} />
-			<BudgeCategoryList data={chartData} />
+			<BudgeCategoryList data={chartData} openTimeoutDialog setOpenTimeoutDialog={setOpenTimeoutDialog}/>
 			<TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
-		</React.Fragment>
+		</Box>
 	)
 }
