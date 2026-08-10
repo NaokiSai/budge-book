@@ -4,7 +4,7 @@ import type { ChartDataCategoryTotals } from '@type/type';
 import { MASTERS } from '@service/master';
 import { ListItem } from '@styledComponents/ListItem';
 import { Image } from '@styledComponents/Image';
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 
 const BASE = import.meta.env.BASE_URL;
 
