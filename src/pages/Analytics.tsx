@@ -73,7 +73,7 @@ export default function Analytics() {
 				setTotalAmount(calculatedTotal);
 
 				// categoryTotalsオブジェクトをChartDataCategoryTotalsの配列に変換する
-				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, index) => ({
+				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, _index) => ({
 					catid: key,
 					value: categoryTotals[key],
 					label: MASTERS.getPaymentCategoryName(key), // ここでカテゴリIDを名前に変換
