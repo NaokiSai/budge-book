@@ -1,5 +1,5 @@
 import { getData } from '@service/DataService';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MASTERS } from '@service/master';
 import { useData } from '@cnxt/DataContext';
 import { BudgeCategoryList } from '@components/BudgeCategoryList';
@@ -58,7 +58,7 @@ export default function Analytics() {
 				const categoryTotals: { [key: string]: number } = {};
 				response.data.entries
 					.filter((entry: any) => !entry.category.includes('ICAT'))
-					.map((entry: any) => {
+					.forEach((entry: any) => {
 						// categoryごとに金額を合計する
 						if (entry.category) {
 							if (!categoryTotals[entry.category]) {
@@ -69,16 +69,15 @@ export default function Analytics() {
 
 					})
 				// 合計金額を計算
-				const totalAmount = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
-				setTotalAmount(totalAmount);
+				const calculatedTotal = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
+				setTotalAmount(calculatedTotal);
 
 				// categoryTotalsオブジェクトをChartDataCategoryTotalsの配列に変換する
 				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, index) => ({
-					// id: index,
 					catid: key,
 					value: categoryTotals[key],
 					label: MASTERS.getPaymentCategoryName(key), // ここでカテゴリIDを名前に変換
-					rate: totalAmount > 0 ? (categoryTotals[key] / totalAmount) * 100 : 0, // 全体に対する割合を計算
+					rate: calculatedTotal > 0 ? (categoryTotals[key] / calculatedTotal) * 100 : 0, // 全体に対する割合を計算
 				}));
 
 				const sortedData = [...temp].sort((a, b) => {
@@ -107,7 +106,7 @@ export default function Analytics() {
 			</Stack>
 			<PieChart loading={loadingCtx} chartData={chartData} />
 			<TotalAmount loading={loadingCtx} amount={totalAmount} />
-			<BudgeCategoryList data={chartData} openTimeoutDialog setOpenTimeoutDialog={setOpenTimeoutDialog}/>
+			<BudgeCategoryList data={chartData} openTimeoutDialog={openTimeoutDialog} setOpenTimeoutDialog={setOpenTimeoutDialog} />
 			<TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
 		</Box>
 	)
