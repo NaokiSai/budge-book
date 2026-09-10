@@ -70,7 +70,7 @@ export const MASTERS = {
   PAYMENT_IS_ADVANCE: [
     { id: "PISADV001", name: "立替なし", keyword: [] },
     { id: "PISADV002", name: "立替あり", keyword: [] },
-    { id: "PISADV003", name: "立替あり", keyword: [] },
+    { id: "PISADV003", name: "借用あり", keyword: [] },
   ],
 
   // 支払カテゴリの定義

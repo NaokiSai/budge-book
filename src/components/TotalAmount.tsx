@@ -19,13 +19,13 @@ export const TotalAmount = (props: TotalAmountProps) => {
   return (
     <React.Fragment>
       {!loading ? (
-        <Box sx={{ mt: 0.5, p: 0.5, backgroundColor: '#F5F5F5' }}>
+        <Box sx={{ mt: 0.5, p: 0.5, backgroundColor: '#F5F5F5', width: '100vw' }}>
           <Typography sx={{ fontSize: 16, fontWeight: 600 }} align="center">
             合計金額 : {Number(amount).toLocaleString()}円
           </Typography>
         </Box>
       ) : (
-        <Box sx={{ mt: 0.5, p: 0.5, backgroundColor: '#F5F5F5' }}>
+        <Box sx={{ mt: 0.5, p: 0.5, backgroundColor: '#F5F5F5', width: '100vw' }}>
           <Skeleton variant="text" sx={{ p: 0.5, mx: 'auto', width: 300, lineHeight: '1.6', fontSize: '1.25rem' }} />
         </Box>
       )}

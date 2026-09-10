@@ -1,5 +1,5 @@
 import { getData } from '@service/DataService';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MASTERS } from '@service/master';
 import { useData } from '@cnxt/DataContext';
 import { BudgeCategoryList } from '@components/BudgeCategoryList';
@@ -73,7 +73,7 @@ export default function Analytics() {
 				setTotalAmount(totalAmount);
 
 				// categoryTotalsオブジェクトをChartDataCategoryTotalsの配列に変換する
-				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, index) => ({
+				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, _index) => ({
 					// id: index,
 					catid: key,
 					value: categoryTotals[key],
@@ -101,13 +101,18 @@ export default function Analytics() {
 		<Box sx={{
 			position: 'relative', // 絶対配置の基準
 			overflow: 'hidden',    // ドロワーのはみ出しをカット
+			flexGrow: 1,
+			display: 'flex',
+			flexDirection: 'column',
 		}}>
-			<Stack sx={{ mt: 2, mx: 'auto' }}>
-				<DatePickerGroup range='month' setSelectedDate={setSelectedMonthCtx} />
+			<Stack direction='column' sx={{ mt: 2, mx: 'auto', width: 'fit-content', alignItems: 'center' }}>
+				<Stack sx={{ mx: 'auto' }}>
+					<DatePickerGroup range='month' setSelectedDate={setSelectedMonthCtx} />
+				</Stack>
+				<PieChart loading={loadingCtx} chartData={chartData} />
+				<TotalAmount loading={loadingCtx} amount={totalAmount} />
 			</Stack>
-			<PieChart loading={loadingCtx} chartData={chartData} />
-			<TotalAmount loading={loadingCtx} amount={totalAmount} />
-			<BudgeCategoryList data={chartData} openTimeoutDialog setOpenTimeoutDialog={setOpenTimeoutDialog}/>
+			<BudgeCategoryList data={chartData} setOpenTimeoutDialog={setOpenTimeoutDialog} />
 			<TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
 		</Box>
 	)

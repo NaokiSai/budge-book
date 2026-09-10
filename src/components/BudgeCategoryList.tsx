@@ -1,11 +1,12 @@
-import { Box, Button, Divider, Drawer, Stack, Typography } from "@mui/material"
+import { Box, Divider, Drawer, Stack, Typography } from "@mui/material"
 import { List } from "@styledComponents/List"
 import type { ChartDataCategoryTotals } from "@type/type"
 import { BudgeCategoryListItem } from "@components/BudgeCategoryListItem"
 import { useData } from "@cnxt/DataContext";
 import { BudgeCategoryListItemSkeleton } from "@components/BudgeCategoryListItemSkeleton";
 import { useState } from "react";
-import { BudgeList } from "./BudgeList";
+import { BudgeListFilterOn } from "./BudgeListFilterOn";
+import { Button } from '@styledComponents/Button';
 
 const SKELETON_NUMBER = 6
 // const COLORS = [
@@ -54,25 +55,23 @@ const COLORS = [
 
 type BudgeCategoryListProps = {
   data: ChartDataCategoryTotals[]
-  openTimeoutDialog: boolean
   setOpenTimeoutDialog: (b: boolean) => void
 }
 export const BudgeCategoryList = (props: BudgeCategoryListProps) => {
-  // const { loadingCtx } = useData();
-  const { data, openTimeoutDialog = false, setOpenTimeoutDialog } = props
-  console.log('BudgeCategoryList', data, openTimeoutDialog)
+
+  const { data, setOpenTimeoutDialog } = props
   const { dataCtx, loadingCtx, setSelectedDateCtx } = useData();
-  // const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
 
   // ドロワーの開閉状態を管理
   const [open, setOpen] = useState(false);
   // クリックされたアイテムの情報を保持（任意）
   const [selectedItem, setSelectedItem] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
-  const toggleDrawer = (newOpen: boolean, itemText: string) => {
-    console.log(newOpen, itemText)
+  const toggleDrawer = (newOpen: boolean, itemText: string, category: string) => {
     setOpen(newOpen);
     setSelectedItem(itemText);
+    setSelectedCategory(category);
   };
 
   return (
@@ -81,7 +80,6 @@ export const BudgeCategoryList = (props: BudgeCategoryListProps) => {
         data.length > 0 ?
           <List sx={{ py: 0, px: 2, width: 'calc(100% - 32px)', position: 'unset' }}>
             {data?.map((data: ChartDataCategoryTotals, index: number) => {
-              // console.log(data, data.id, COLORS[data.id]);
               return (
                 <BudgeCategoryListItem data={data} key={index} color={COLORS[index]} onClickdd={toggleDrawer} />
               );
@@ -107,7 +105,7 @@ export const BudgeCategoryList = (props: BudgeCategoryListProps) => {
             sx: {
               position: 'absolute', // 親のBoxに対して絶対配置
               height: '100%',        // 親の高さに合わせる
-              width: 'fit-content',
+              width: '100vw',
               zIndex: 0
             }
           }
@@ -118,12 +116,18 @@ export const BudgeCategoryList = (props: BudgeCategoryListProps) => {
           sx={{ width: 'calc(100% - 36px)', p: 2 }}
           role="presentation"
         >
-          <Button onClick={() => toggleDrawer(false, '')}>afafa</Button>
+          <Stack direction='row' spacing={1} sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+            <Button onClick={() => toggleDrawer(false, '', '')} sx={{ bgcolor: 'action.disabledBackground' }}>
+              閉じる
+            </Button>
+          </Stack>
           <Typography variant="h6" gutterBottom>
-            {selectedItem} の詳細
+            {selectedItem} の内訳
           </Typography>
-          <Divider sx={{ my: 2 }} />
-          <BudgeList setSelectedDate={setSelectedDateCtx} setOpenTimeoutDialog={setOpenTimeoutDialog} inputData={dataCtx} />
+          <Divider sx={{ my: 1 }} />
+          <Box>
+            <BudgeListFilterOn setSelectedDate={setSelectedDateCtx} setOpenTimeoutDialog={setOpenTimeoutDialog} inputData={dataCtx} categoryFilter={selectedCategory} />
+          </Box>
         </Box>
       </Drawer>
     </Box>

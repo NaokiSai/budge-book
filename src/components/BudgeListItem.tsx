@@ -37,10 +37,10 @@ export const BudgeListItem = ({ entry }: { entry: DataEntry }) => {
             </Typography>
           </Stack>
           <Stack direction="row" sx={{ width: '100%' }}>
-            <Typography sx={{ fontSize: 10, ml: 0, mr: 'auto' }}>
+            <Typography sx={{ fontSize: 8, ml: 0, mr: 'auto' }}>
               {MASTERS.getUserName(entry.paymentPerson)} | {entry.shop}
             </Typography>
-            <Typography sx={{ fontSize: 10, ml: 'auto', mr: 0 }}>
+            <Typography sx={{ fontSize: 8, ml: 'auto', mr: 0 }}>
               {MASTERS.getPaymentMethodName(entry.paymentMethod)}
             </Typography>
           </Stack>

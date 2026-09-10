@@ -1,35 +1,23 @@
-import { Box, Button, Divider, Drawer, ListItemButton, Stack, Typography } from '@mui/material';
-// import type { DataEntry } from '@type/type';
+import { ListItemButton, Stack, Typography } from '@mui/material';
 import type { ChartDataCategoryTotals } from '@type/type';
 import { MASTERS } from '@service/master';
 import { ListItem } from '@styledComponents/ListItem';
 import { Image } from '@styledComponents/Image';
-import React, { useState } from 'react';
 
 const BASE = import.meta.env.BASE_URL;
 
 type BudgeCategoryListItemProps = {
   data: ChartDataCategoryTotals,
   color: string,
-  onClickdd: (newOpen: boolean, itemText: string) => void
+  onClickdd: (newOpen: boolean, itemText: string, category: string) => void
 }
 export const BudgeCategoryListItem = (props: BudgeCategoryListItemProps) => {
   const { data, color, onClickdd } = props
 
-  // // ドロワーの開閉状態を管理
-  // const [open, setOpen] = useState(true);
-  // // クリックされたアイテムの情報を保持（任意）
-  // const [selectedItem, setSelectedItem] = useState('');
-
-  // const toggleDrawer = (newOpen: boolean, itemText: string = '') => () => {
-  //   setOpen(newOpen);
-  //   setSelectedItem(itemText);
-  // };
   return (
     <ListItem sx={{ width: '100%', padding: 0 }}>
       <ListItemButton sx={{ padding: '8px 4px' }} onClick={() => {
-        onClickdd(true, MASTERS.getPaymentCategoryName(data.label))
-        console.log('dada')
+        onClickdd(true, MASTERS.getPaymentCategoryName(data.label), data.catid)
       }}>
         <Stack direction="row" spacing={0} sx={{ width: '100%' }}>
           <Image src={`${BASE}images/${data.catid}.png`} sx={{ width: 36, height: 36, backgroundImageorderRadius: 1, my: 'auto !important' }} />
