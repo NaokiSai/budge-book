@@ -1,6 +1,5 @@
 import { getData } from '@service/DataService';
 import { useEffect, useState } from 'react';
-import { useEffect, useState } from 'react';
 import { MASTERS } from '@service/master';
 import { useData } from '@cnxt/DataContext';
 import { BudgeCategoryList } from '@components/BudgeCategoryList';
