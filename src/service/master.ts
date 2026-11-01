@@ -62,6 +62,7 @@ export const MASTERS = {
     { id: "PMETH003", name: "現金", keyword: [] },
     { id: "PMETH004", name: "d払い", keyword: [] },
     { id: "PMETH005", name: "paypay", keyword: [] },
+    { id: "PMETH006", name: "ガラシャpay", keyword: [] },
     { id: "PMETH998", name: "その他", keyword: [] },
     { id: "PMETH999", name: "未分類", keyword: [] },
   ],
@@ -69,8 +70,8 @@ export const MASTERS = {
   // 立替
   PAYMENT_IS_ADVANCE: [
     { id: "PISADV001", name: "立替なし", keyword: [] },
-    { id: "PISADV002", name: "立替あり", keyword: [] },
-    { id: "PISADV003", name: "借用あり", keyword: [] },
+    { id: "PISADV002", name: "立替あり(現金/カードなど)", keyword: [] },
+    { id: "PISADV003", name: "借用あり(カード/ポイントなど)", keyword: [] },
   ],
 
   // 支払カテゴリの定義
