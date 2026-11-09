@@ -1,119 +1,89 @@
-import { getData } from '@service/DataService';
-import { useEffect, useState } from 'react';
-import { MASTERS } from '@service/master';
+import { useState } from 'react';
 import { useData } from '@cnxt/DataContext';
-import { BudgeCategoryList } from '@components/BudgeCategoryList';
-import type { ChartDataCategoryTotals } from '@type/type';
-import { TotalAmount } from '@components/TotalAmount';
-import { PieChart } from '@components/PieChart';
+import { useTransactionAnalytics } from '@features/analytics/hooks/useTransactionAnalytics';
+import { BudgeCategoryList } from '@features/analytics/components/BudgeCategoryList';
+import { TotalAmount } from '@styledComponents/TotalAmount';
+import { PieChart } from '@features/analytics/components/PieChart';
 import { Box, Stack } from '@mui/material';
-import { DatePickerGroup } from '@src/components/DatePickerGroup';
-import { TimeoutDialog } from '@src/components/TimeoutDialog';
+import { DatePickerGroup } from '@features/transactions/components/DatePickerGroup';
+import { TimeoutDialog } from '@styledComponents/TimeoutDialog';
+import { BudgeCategoryGroupList } from '@features/analytics/components/BudgeCategoryGroupList';
 
 export default function Analytics() {
-	const { setDataCtx, loadingCtx, setLoadingCtx, selectedMonthCtx, setSelectedMonthCtx } = useData();
+	// コンテキストからデータや状態をもらう（ここでキャッシュされたデータを使う）
+	const {
+		dataCtx,
+		loadingCtx,
+		selectedDateCtx,
+		setSelectedDateCtx,
+		handleUpdateData,
+		handleDeleteData,
+		setSelectedMonthCtx
+	} = useData();
+	const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false);
+	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
+	// ドロワーの開閉状態を管理
+	const [open, setOpen] = useState(false);
+	// コンテキストにある生データをフックに渡して、グラフ用の集計済みデータをもらう
+	const { chartData, totalAmount, categoryGroups } = useTransactionAnalytics(dataCtx);
 
-	const [chartData, setChartData] = useState<ChartDataCategoryTotals[]>([]);
-	const [totalAmount, setTotalAmount] = useState(0);
-	const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false)
+	const handleOpenDrawer = (index: number) => {
+		setSelectedItemIndex(index);
+		setOpen(true);
+	}
 
-	useEffect(() => {
-		let month: string = ''
-		if (selectedMonthCtx === undefined) {
-			// 初期値はアプリを開いた日の月を入れる
-			month = new Intl.DateTimeFormat('sv-SE', {
-				timeZone: 'Asia/Tokyo',
-				year: 'numeric',
-				month: '2-digit',
-			}).format(new Date())
-		} else {
-			month = selectedMonthCtx.format('YYYY-MM')
-		}
-
-		// 日付指定でデータを取得する
-		getAnalyticsData(month);
-
-	}, [selectedMonthCtx]);
-
-	const getAnalyticsData = async (month: string) => {
-
-		// 表示データを初期化
-		setChartData([])
-		setTotalAmount(0)
-
-		// 1. 開始時にローディングをON
-		setLoadingCtx(true);
-
-		try {
-
-			const response = await getData(month); // これも必要に応じて呼び出してください
-			if (response?.status === 'error' && response.httpCode === 419) {
-				setOpenTimeoutDialog(true)
-			}
-
-			if (response !== null && response.data !== undefined && response.data.period === month) {
-				setDataCtx(response.data.entries);
-				// ChartDataCategoryTotalsの配列を作成するために、カテゴリごとに金額を合計する
-
-				const categoryTotals: { [key: string]: number } = {};
-				response.data.entries
-					.filter((entry: any) => !entry.category.includes('ICAT'))
-					.forEach((entry: any) => {
-						// categoryごとに金額を合計する
-						if (entry.category) {
-							if (!categoryTotals[entry.category]) {
-								categoryTotals[entry.category] = 0;
-							}
-							categoryTotals[entry.category] += entry.amount;
-						}
-
-					})
-				// 合計金額を計算
-				const calculatedTotal = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
-				setTotalAmount(calculatedTotal);
-
-				// categoryTotalsオブジェクトをChartDataCategoryTotalsの配列に変換する
-				const temp: ChartDataCategoryTotals[] = Object.keys(categoryTotals).map((key, _index) => ({
-					// id: index,
-					catid: key,
-					value: categoryTotals[key],
-					label: MASTERS.getPaymentCategoryName(key), // ここでカテゴリIDを名前に変換
-					rate: calculatedTotal > 0 ? (categoryTotals[key] / calculatedTotal) * 100 : 0, // 全体に対する割合を計算
-				}));
-
-				const sortedData = [...temp].sort((a, b) => {
-					// b - a で降順（大きい順）
-					return (b.rate as number) - (a.rate as number);
-				});
-
-				setChartData(sortedData);
-
-			}
-		} catch (error) {
-			// 必要ならここでユーザーにトースト通知などを出す
-		} finally {
-			// 3. 成功・失敗に関わらず、最後に必ずローディングをOFF
-			setLoadingCtx(false);
-		}
-	};
+	const handleCloseDrawer = () => {
+		setSelectedItemIndex(null);
+		setOpen(false);
+	}
 
 	return (
 		<Box sx={{
-			position: 'relative', // 絶対配置の基準
-			overflow: 'hidden',    // ドロワーのはみ出しをカット
+			position: 'relative',
+			overflow: 'hidden',
 			flexGrow: 1,
 			display: 'flex',
 			flexDirection: 'column',
 		}}>
-			<Stack direction='column' sx={{ mt: 2, mx: 'auto', width: 'fit-content', alignItems: 'center' }}>
+			<Stack
+				direction='column'
+				sx={{ mt: 2, mx: 'auto', width: 'fit-content', alignItems: 'center' }}>
 				<Stack sx={{ mx: 'auto' }}>
-					<DatePickerGroup range='month' setSelectedDate={setSelectedMonthCtx} />
+					<DatePickerGroup
+						range='month'
+						setSelectedDate={setSelectedMonthCtx} />
 				</Stack>
-				<PieChart loading={loadingCtx} chartData={chartData} />
-				<TotalAmount loading={loadingCtx} amount={totalAmount} />
+				<PieChart
+					loading={loadingCtx}
+					chartData={chartData} />
+				<TotalAmount
+					loading={loadingCtx}
+					amount={totalAmount} />
 			</Stack>
-			<BudgeCategoryList data={chartData} setOpenTimeoutDialog={setOpenTimeoutDialog} />
-			<TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
+			<Box sx={{ flexGrow: 1, overflow: 'auto', width: '100%' }}>
+				<BudgeCategoryList
+					isLoading={loadingCtx}
+					categoryGroups={categoryGroups}
+					onClick={handleOpenDrawer}
+				/>
+				{/* 右側から出てくるドロワー */}
+				{selectedItemIndex !== null && (
+					<BudgeCategoryGroupList
+						categoryGroups={categoryGroups[selectedItemIndex]}
+						isLoading={loadingCtx}
+						selectedDate={selectedDateCtx}
+						setSelectedDate={setSelectedDateCtx}
+						setOpenTimeoutDialog={setOpenTimeoutDialog}
+						onUpdate={handleUpdateData}
+						onDelete={handleDeleteData}
+						onClose={handleCloseDrawer}
+						isOpen={open}
+					/>
+				)}
+			</Box>
+			<TimeoutDialog
+				open={openTimeoutDialog}
+				onClose={() => setOpenTimeoutDialog(false)} />
 		</Box>
-	)
+	);
 }

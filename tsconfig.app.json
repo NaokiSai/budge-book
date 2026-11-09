@@ -41,6 +41,9 @@
       "@pages/*": [
         "./src/pages/*"
       ],
+      "@pages2/*": [
+        "./src/pages2/*"
+      ],
       "@components/*": [
         "./src/components/*"
       ],
@@ -61,6 +64,9 @@
       ],
       "@css/*": [
         "./src/css/*"
+      ],
+      "@features/*": [
+        "./src/features/*"
       ],
     }
   },

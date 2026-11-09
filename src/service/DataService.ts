@@ -170,7 +170,6 @@ export const PostRemoveData = async (data: string): Promise<FetchDataResponse | 
     // 4. 通信実行（await で完了を待つ）
     const response = await gasClient.PostData(idToken, data, timestamp, 'remove');
 
-    console.log(response)
     // GASClient側でエラーが返ってきた場合のチェック
     if (response.status === 'error') {
       throw new Error(response.message);
@@ -210,3 +209,90 @@ export const CheckDedlineToken = () => {
 
   return { status: 'success', message: '', httpCode: 200, user: '' }
 }
+
+
+export const getImage = async (targetPath: string): Promise<string | null> => {
+  try {
+    // 1. ローカルストレージからIDトークンを取得
+    const idToken = localStorage.getItem('id_token');
+
+    // 2. IDトークンの有無を確認
+    if (!idToken) {
+      console.error('ログインが必要です');
+      return null;
+    }
+
+    // 3. IDトークンの期限を確認する
+    const decoded: { exp: number } = jwtDecode(idToken);
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < (currentTime + 300)) {
+      console.error('IDトークンが期限切れです。');
+      return null;
+    }
+
+    // タイムスタンプを作成
+    const timestamp = new Date().getTime();
+
+    // 4. gasClient（または fetch）を使ってGASへリクエスト
+    // ※ gasClient側に image取得用のメソッドを生やすか、直接fetchする形にします
+    // const gasUrl = "https://script.google.com/macros/s/YOUR_URL/exec";
+    // const url = `${gasUrl}?option=image&id=${fileId}&id_token=${encodeURIComponent(idToken)}&timestamp=${timestamp}`;
+
+    const response = await gasClient.fetchImage(idToken, targetPath, timestamp);
+
+    if (response.status === 'error') {
+      throw new Error(response.message);
+    }
+
+    // 5. 成功時は Base64 のデータURLを返す
+    return response.data || null; // "data:image/png;base64,..."
+
+  } catch (error) {
+    console.error('画像の取得に失敗しました:', error);
+    return null;
+  }
+};
+
+
+export const getAllImages = async (): Promise<Record<string, string> | null> => {
+  try {
+    // 1. ローカルストレージからIDトークンを取得
+    const idToken = localStorage.getItem('id_token');
+
+    // 2. IDトークンの有無を確認
+    if (!idToken) {
+      console.error('ログインが必要です');
+      return null;
+    }
+
+    // 3. IDトークンの期限を確認する
+    const decoded: { exp: number } = jwtDecode(idToken);
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < (currentTime + 300)) {
+      console.error('IDトークンが期限切れです。');
+      return null;
+    }
+
+    // タイムスタンプを作成
+    const timestamp = new Date().getTime();
+
+    // 4. gasClient（または fetch）を使ってGASへリクエスト
+    // ※ gasClient側に image取得用のメソッドを生やすか、直接fetchする形にします
+    // const gasUrl = "https://script.google.com/macros/s/YOUR_URL/exec";
+    // const url = `${gasUrl}?option=image&id=${fileId}&id_token=${encodeURIComponent(idToken)}&timestamp=${timestamp}`;
+
+    const response = await gasClient.fetchAllImages(idToken, timestamp);
+
+    if (response.status === 'error') {
+      throw new Error(response.message);
+    }
+
+    console.log('取得したアイコン一覧:', response.data);
+    // 5. 成功時は Base64 のデータURLを返す
+    return response.data || null; // "data:image/png;base64,..."
+
+  } catch (error) {
+    console.error('画像の取得に失敗しました:', error);
+    return null;
+  }
+};

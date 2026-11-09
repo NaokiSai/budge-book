@@ -25,6 +25,21 @@ export type SaveDataResponse = {
   httpCode: number;
 };
 
+export type FetchImageResponse = {
+  status: 'success' | 'error';
+  message: string;
+  data: string; // "data:image/...;base64,..." 形式の文字列
+  httpCode: number;
+};
+
+export type FetchAllImagesResponse = {
+  status: 'success' | 'error';
+  message: string;
+  data: Record<string, string>;
+  httpCode: number;
+};
+
+
 export type GranularityLevel = 'summary' | 'detail' | 'full';
 
 export type DataEntry = {
@@ -95,7 +110,6 @@ class GASClient {
       }
 
       const data = await response.json();
-      // console.log(data)
       return data;
     } catch (error) {
       console.error('🔴 ログインエラー:', error);
@@ -179,6 +193,69 @@ class GASClient {
       return { status: 'error', message: String(error), httpCode: 0 };
     }
   }
+
+  /**
+   * Googleドライブから画像（Base64）を取得する
+   */
+  async fetchImage(id_token: string, targetPath: string, timestamp: number): Promise<FetchImageResponse> {
+    try {
+      const url = new URL(this.gasUrl);
+      url.searchParams.append('option', 'image');
+      url.searchParams.append('id_token', id_token);
+      url.searchParams.append('id', targetPath);
+      url.searchParams.append('timestamp', timestamp.toString());
+
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        mode: 'cors',
+        redirect: 'follow',
+      });
+
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+      const result = await response.json();
+      if (result.status === 'error') {
+        throw new Error(result.message);
+      }
+
+      // Base64データ (data:image/...;base64,...) を含む結果すべてを返す
+      return result;
+
+    } catch (error) {
+      console.error('🔴 画像取得エラー:', error);
+      return { status: 'error', message: String(error), data: '', httpCode: 0 };
+    }
+  }
+
+  async fetchAllImages(id_token: string, timestamp: number): Promise<FetchAllImagesResponse> {
+    try {
+      const url = new URL(this.gasUrl);
+      url.searchParams.append('option', 'all-image');
+      url.searchParams.append('id_token', id_token);
+      url.searchParams.append('timestamp', timestamp.toString());
+
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        mode: 'cors',
+        redirect: 'follow',
+      });
+
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+      const result = await response.json();
+      if (result.status === 'error') {
+        throw new Error(result.message);
+      }
+
+      // Base64データ (data:image/...;base64,...) を含む結果すべてを返す
+      return result;
+
+    } catch (error) {
+      console.error('🔴 画像取得エラー:', error);
+      return { status: 'error', message: String(error), data: {}, httpCode: 0 };
+    }
+  }
 }
+
 
 export default GASClient;
