@@ -287,7 +287,6 @@ export const getAllImages = async (): Promise<Record<string, string> | null> => 
       throw new Error(response.message);
     }
 
-    console.log('取得したアイコン一覧:', response.data);
     // 5. 成功時は Base64 のデータURLを返す
     return response.data || null; // "data:image/png;base64,..."
 

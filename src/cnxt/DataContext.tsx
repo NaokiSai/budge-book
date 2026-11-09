@@ -145,7 +145,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         setDataCtx((prevData) =>
           prevData.map((item) => (item.id === payload.id ? payload : item)) // 該当データを置き換え
         );
-        console.log("データを更新しました:", payload);
         // showSnackbar("データを更新しました");
         return true;
       }
