@@ -60,4 +60,23 @@ type ChartDataCategoryTotals = {
   rate?: number; // 全体に対する割合（%）を追加
 };
 
-export type { GasResponse, DataEntry, FetchDataPayload, FetchDataResponse, ChartDataCategoryTotals };
+/** 支払者＆立替　合計データ */
+type DataPayerReimburseTotals = {
+  paymentPerson: string;         // 支払者コード
+  total: number;
+};
+
+type PayerReimburseTotalsGroup = {
+  paymentData: DataPayerReimburseTotals;
+  entries: DataEntry[];
+};
+
+export type {
+  GasResponse,
+  DataEntry,
+  FetchDataPayload,
+  FetchDataResponse,
+  ChartDataCategoryTotals,
+  DataPayerReimburseTotals,
+  PayerReimburseTotalsGroup
+};

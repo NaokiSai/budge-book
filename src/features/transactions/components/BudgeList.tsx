@@ -4,7 +4,7 @@ import type { DataEntry } from "@type/type"
 import { BudgeListItemSkelton } from "./list/BudgeListItemSkelton"
 import { BudgeListItem } from "./list/BudgeListItem"
 import 'react-swipeable-list/dist/styles.css'; // スタイルを忘れずにインポート
-import noDataUrl from '@assets/NoData.png'
+import noDataUrl from '@assets/NoData.webp'
 import { Image } from "@styledComponents/Image"
 import '@css/BudgeList.css'
 import { useState } from "react"
@@ -12,7 +12,6 @@ import { DeleteDialog } from "./DeleteDialog"
 import { UpdateDialog } from "./UpdateDialog"
 import type { Dayjs } from "dayjs"
 import { List } from "@src/styledComponents/List"
-import dayjs from "dayjs"
 import { useIconCache } from "@src/cnxt/IconContext"
 import { EditButton } from "./actions/EditButton"
 import { DeleteButton } from "./actions/DeleteButton"
@@ -35,15 +34,11 @@ export const BudgeList = (props: BudgeListProps) => {
   const {
     entries,
     isLoading,
-    selectedDate,
-    // setSelectedDate,
-    // setOpenTimeoutDialog,
     onUpdate,
     onDelete
   } = props
-  // const { loadingCtx, selectedDateCtx } = useData();
-  const { loading } = useIconCache()
 
+  const { loading } = useIconCache()
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [willData, setWillData] = useState<DataEntry | null>(null)
