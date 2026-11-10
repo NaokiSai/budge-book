@@ -1,9 +1,9 @@
 import { DateCalendar } from '@features/transactions/components/DateCalendar'
 import { BudgeList } from '@features/transactions/components/BudgeList';
 import { TotalAmount } from '@styledComponents/TotalAmount';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useData } from '@cnxt/DataContext';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { TimeoutDialog } from '@styledComponents/TimeoutDialog';
 import { useFilteredTransactions } from '@src/features/transactions/hooks/useFilteredTransactions';
 
@@ -21,6 +21,11 @@ function Home() {
 
   const requestAbortController = useRef<AbortController | null>(null);
   const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Home画面を開いたときに今日の日にちをセット
+    setSelectedDateCtx(dayjs());
+  }, []);
 
   // コンテキストから得た dataCtx と selectedDateCtx を純粋な計算フックに渡す
   const {
