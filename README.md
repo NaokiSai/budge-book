@@ -1,3 +1,4 @@
+```
 src/
 ├── assets/                  # 画像などの静的ファイル（Logo.png など）
 │
@@ -20,7 +21,11 @@ src/
 ├── type/                    # アプリ全体で共有するTypeScriptの型定義
 │   └── type.ts
 │
+```
+
 # 👇 ここから「機能ごと」に完全に独立させる（Feature-based）
+
+```
 ├── features/
 │   │
 │   ├── transactions/        # 【家計簿の記録・一覧機能】（一番複雑になりやすい部分）
@@ -55,3 +60,4 @@ src/
 │
 ├── App.tsx                  # ルーティングやプロバイダの定義
 └── main.tsx
+```
