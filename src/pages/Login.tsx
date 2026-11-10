@@ -6,15 +6,11 @@ import { gasClient } from '@service/api';
 import { Image } from '@styledComponents/Image';
 import TopImage from './../assets/TopLogo.png';
 import { useState, useEffect } from 'react';
-import { useData } from '@src/cnxt/DataContext';
-import dayjs from 'dayjs';
 
 export default function Login() {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState('');
-
-  const { setSelectedDateCtx } = useData();
 
   // ★ ログイン画面が開いたとき（マウント時）に、古いキャッシュや認証情報を完全クリアする
   useEffect(() => {
