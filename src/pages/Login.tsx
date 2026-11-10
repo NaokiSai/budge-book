@@ -4,15 +4,29 @@ import { Box, Typography } from '@mui/material';
 import type { GasResponse } from '@type/type';
 import { gasClient } from '@service/api';
 import { Image } from '@styledComponents/Image';
-import TopImage from './../assets/TopLogo.png'
-import { useState } from 'react';
+import TopImage from './../assets/TopLogo.png';
+import { useState, useEffect } from 'react';
 
 export default function Login() {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState('');
 
-  // ログイン成功後の処理を分離
+  // ★ ログイン画面が開いたとき（マウント時）に、古いキャッシュや認証情報を完全クリアする
+  useEffect(() => {
+    // 1. ローカルストレージの認証・ユーザー情報を削除
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('user_name');
+
+    // 2. アイコンキャッシュもクリア（必要に応じてキー名を合わせてください）
+    localStorage.removeItem('app_icon_cache_v1');
+
+    // 必要であれば sessionStorage などもここでクリア可能
+    // sessionStorage.clear();
+  }, []);
+
+  // ログイン成功後の処理
   const onGoogleSuccess = async (credentialResponse: any) => {
     const idToken = credentialResponse.credential;
 
@@ -22,27 +36,27 @@ export default function Login() {
     }
 
     setIsProcessing(true);
-    setMessage('認証中...')
+    setMessage('認証中...');
 
     try {
       // API呼び出し
       const result = await gasClient.login(idToken);
-      const json: GasResponse = result; // 型が合っていればそのまま代入でOK
+      const json: GasResponse = result;
 
       if (json.httpCode !== 200) {
         throw new Error(json.message || "サーバーエラーが発生しました");
       }
 
-      // データの保存
+      // 新しいデータの保存
       localStorage.setItem('id_token', idToken);
       localStorage.setItem('user', json.user?.picture ?? '');
-      localStorage.setItem('user_name', json.user?.name ?? '')
+      localStorage.setItem('user_name', json.user?.name ?? '');
 
       // 画面遷移
       navigate('/home');
 
     } catch (error: any) {
-      setMessage('認証できませんでした。')
+      setMessage('認証できませんでした。');
     } finally {
       setIsProcessing(false);
     }
@@ -58,7 +72,7 @@ export default function Login() {
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: '#F6F2E2',
-        height: '100%'
+        height: '100%',
       }}
     >
       <Image src={TopImage} sx={{ width: '80%', maxWidth: 300, mt: 'auto', mb: 4 }} />

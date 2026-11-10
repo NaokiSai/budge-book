@@ -6,21 +6,19 @@ import { Button } from '@styledComponents/Button';
 interface TimeoutDialogProps {
   open: boolean;
   onClose: () => void;
-  resetContext?: () => void; // 追加: Contextをリセットする関数の型定義
+  resetContext?: () => void; // Contextをリセットする関数
 }
 
 /**
  * TimeoutDialog
- * @param props 
- * @returns 
  */
 export const TimeoutDialog = (props: TimeoutDialogProps) => {
-  const { open = false, onClose } = props
+  const { open = false, onClose, resetContext } = props;
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(10);
 
   useEffect(() => {
-    let timer: number | undefined; // ブラウザ環境用に number で定義
+    let timer: number | undefined;
 
     if (open) {
       setCountdown(10); // ダイアログが開くたびにカウントをリセット
@@ -43,7 +41,17 @@ export const TimeoutDialog = (props: TimeoutDialogProps) => {
   }, [open]);
 
   const handleNavigate = () => {
-    localStorage.clear(); // 認証情報をクリーンアップ
+    // 1. React コンテキストの状態を丸ごと初期値に戻す
+    if (resetContext) {
+      resetContext();
+    }
+
+    // 2. localStorage は無差別に clear() せず、アプリ固有の認証・キャッシュキーのみ個別削除する
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('app_icon_cache_v1');
+
     onClose();
     navigate('/login');
   };
@@ -59,7 +67,6 @@ export const TimeoutDialog = (props: TimeoutDialogProps) => {
           あと **{countdown}秒** で自動的にログイン画面へ戻ります。
         </Typography>
         <Box sx={{ width: '100%', mt: 2 }}>
-          {/* 視覚的な進行状況を表示 */}
           <LinearProgress variant="determinate" value={(countdown / 10) * 100} />
         </Box>
       </DialogContent>

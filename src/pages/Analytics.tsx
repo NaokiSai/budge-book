@@ -51,7 +51,8 @@ export default function Analytics() {
 				<Stack sx={{ mx: 'auto' }}>
 					<DatePickerGroup
 						range='month'
-						setSelectedDate={setSelectedMonthCtx} />
+						setSelectedDate={setSelectedMonthCtx}
+						initialDate={selectedDateCtx} />
 				</Stack>
 				<PieChart
 					loading={loadingCtx}

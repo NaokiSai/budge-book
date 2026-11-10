@@ -57,6 +57,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         if (response !== null && response.data !== undefined && response.data.period === targetMonth) {
           // 取得したエントリーをコンテキストのキャッシュに保存
           setDataCtx(response.data.entries);
+
+          // 日にちを更新しておく
+          const firstDayOfMonth = selectedMonthCtx.date(1);
+          setSelectedDateCtx(firstDayOfMonth);
         }
       } catch (error) {
         // エラーハンドリング
