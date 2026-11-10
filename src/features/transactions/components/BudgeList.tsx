@@ -135,8 +135,6 @@ export const BudgeList = (props: BudgeListProps) => {
           onCancel={handleEditCancel}
           onOk={handleEditOk}
           willEditData={willData}
-        // setSelectedDate={setSelectedDate}
-        // setOpenTimeoutDialog={setOpenTimeoutDialog}
         />}
     </Box>
   )

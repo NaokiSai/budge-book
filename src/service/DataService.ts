@@ -2,6 +2,18 @@ import { gasClient } from "./api";
 import type { FetchDataResponse } from "@type/type";
 import { jwtDecode } from 'jwt-decode';
 
+const getValidTokenWithRetry = async (maxRetries = 3, delay = 200): Promise<string | null> => {
+  for (let i = 0; i < maxRetries; i++) {
+    const token = localStorage.getItem('id_token');
+    if (token) return token;
+    
+    // トークンがまだない場合は少し待ってから再試行
+    await new Promise((resolve) => setTimeout(resolve, delay));
+  }
+
+  return null;
+};
+
 /**
  * 
  * @param date
@@ -11,7 +23,9 @@ export const getData = async (date: string): Promise<FetchDataResponse | null> =
 
   try {
     // 1. ローカルストレージからIDトークンを取得
-    const idToken = localStorage.getItem('id_token');
+    // const idToken = localStorage.getItem('id_token');
+    // ★ 単にすぐ取らず、保存直後のタイムラグを考慮してリトライ付きで取得する
+    const idToken = await getValidTokenWithRetry();
 
     // 2. IDトークンの有無を確認
     if (!idToken) {

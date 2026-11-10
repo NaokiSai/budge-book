@@ -15,7 +15,7 @@ function Home() {
     setSelectedDateCtx,
     handleUpdateData,
     handleDeleteData,
-    setSelectedMonthCtx
+    setSelectedMonthCtx,
   } = useData();
 
   const requestAbortController = useRef<AbortController | null>(null);
@@ -23,6 +23,8 @@ function Home() {
   useEffect(() => {
     // Home画面を開いたときに今日の日にちをセット
     setSelectedDateCtx(dayjs());
+    const currentMonth = dayjs().startOf('month');
+    setSelectedMonthCtx(currentMonth)
   }, []);
 
   // コンテキストから得た dataCtx と selectedDateCtx を純粋な計算フックに渡す

@@ -25,9 +25,6 @@ export default function Login() {
 
     // 2. アイコンキャッシュもクリア（必要に応じてキー名を合わせてください）
     localStorage.removeItem('app_icon_cache_v1');
-
-    // 必要であれば sessionStorage などもここでクリア可能
-    // sessionStorage.clear();
   }, []);
 
   // ログイン成功後の処理
@@ -55,7 +52,6 @@ export default function Login() {
       localStorage.setItem('id_token', idToken);
       localStorage.setItem('user', json.user?.picture ?? '');
       localStorage.setItem('user_name', json.user?.name ?? '');
-      setSelectedDateCtx(dayjs());
 
       // 画面遷移
       navigate('/home');
