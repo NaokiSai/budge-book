@@ -6,7 +6,6 @@ import { TotalAmount } from '@styledComponents/TotalAmount';
 import { PieChart } from '@features/analytics/components/PieChart';
 import { Box, Stack } from '@mui/material';
 import { DatePickerGroup } from '@features/transactions/components/DatePickerGroup';
-import { TimeoutDialog } from '@styledComponents/TimeoutDialog';
 import { BudgeCategoryGroupList } from '@features/analytics/components/BudgeCategoryGroupList';
 
 export default function Analytics() {
@@ -20,7 +19,6 @@ export default function Analytics() {
 		handleDeleteData,
 		setSelectedMonthCtx
 	} = useData();
-	const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false);
 	const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
 	// ドロワーの開閉状態を管理
 	const [open, setOpen] = useState(false);
@@ -74,7 +72,6 @@ export default function Analytics() {
 						isLoading={loadingCtx}
 						selectedDate={selectedDateCtx}
 						setSelectedDate={setSelectedDateCtx}
-						setOpenTimeoutDialog={setOpenTimeoutDialog}
 						onUpdate={handleUpdateData}
 						onDelete={handleDeleteData}
 						onClose={handleCloseDrawer}
@@ -82,9 +79,6 @@ export default function Analytics() {
 					/>
 				)}
 			</Box>
-			<TimeoutDialog
-				open={openTimeoutDialog}
-				onClose={() => setOpenTimeoutDialog(false)} />
 		</Box>
 	);
 }

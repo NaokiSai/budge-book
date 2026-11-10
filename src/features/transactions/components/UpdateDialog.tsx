@@ -10,10 +10,8 @@ import dayjs from 'dayjs';
 interface UpdateDialogProps {
   open: boolean;
   onCancel: () => void;
-  onOk: (payload: DataEntry) => Promise<any>; // レスポンスやエラーを受け取れるよう調整
+  onOk: (payload: DataEntry) => Promise<boolean>; // レスポンスやエラーを受け取れるよう調整
   willEditData: DataEntry;
-  setOpenTimeoutDialog: (flag: boolean) => void;
-  setSelectedDate: (d: Dayjs) => void;
 }
 
 export const UpdateDialog = ({
@@ -21,8 +19,6 @@ export const UpdateDialog = ({
   onOk,
   onCancel,
   willEditData,
-  setOpenTimeoutDialog,
-  setSelectedDate,
 }: UpdateDialogProps) => {
   // 1. 状態管理をオブジェクトに集約
   const [formState, setFormState] = useState({
@@ -63,7 +59,6 @@ export const UpdateDialog = ({
   // 4. 保存処理（堅牢なエラーハンドリングとクローズ・日付同期を追加）
   const handleSave = async () => {
     setLoading(true);
-    setMessage('保存中...');
 
     const payload: DataEntry = {
       ...willEditData, // 元のIDなどを維持
@@ -77,33 +72,11 @@ export const UpdateDialog = ({
       memo: formState.memo,
     };
 
-    try {
-      const result = await onOk(payload); // 親に保存を通知
-
-      // タイムアウト等のレスポンス判定が必要な場合
-      if (result?.httpCode === 419) {
-        setOpenTimeoutDialog(true);
-        return;
-      }
-
-      // 変更した日付を親側の選択日にも反映させる
-      if (selectedTempDate && selectedTempDate.isValid()) {
-        setSelectedDate(selectedTempDate);
-      }
-
-      // 保存成功したらダイアログを閉じる
-      onCancel();
-    } catch (error: any) {
-      // 異常系の捕捉
-      if (error?.httpCode === 419) {
-        setOpenTimeoutDialog(true);
-      } else {
-        setMessage('保存に失敗しました。もう一度お試しください。');
-      }
-    } finally {
-      // 成功・失敗に関わらずローディングを必ず解除
-      setLoading(false);
+    const result = await onOk(payload); // 親に保存を通知
+    if (!result) {
+      setMessage('保存に失敗しました。もう一度お試しください。');
     }
+    setLoading(false);
   };
 
   const handleClose = () => {

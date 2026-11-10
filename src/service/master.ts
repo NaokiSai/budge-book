@@ -79,7 +79,7 @@ export const MASTERS = {
     { id: "PCAT001", name: "食費", keywords: [] },
     { id: "PCAT002", name: "日用品", keywords: [] },
     { id: "PCAT003", name: "交通費", keywords: [] },
-    { id: "PCAT004", name: "光熱費（水道・ガス・電気）", keywords: [] },
+    { id: "PCAT004", name: "光熱費(水道/ガス/電気)", keywords: [] },
     { id: "PCAT005", name: "通信費", keywords: [] },
     { id: "PCAT006", name: "住まい", keywords: [] },
     { id: "PCAT007", name: "衣類", keywords: [] },

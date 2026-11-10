@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-// import { useData } from "@cnxt/DataContext";
 import dayjs from "dayjs";
 import type { DataEntry } from "@src/type/type";
 
@@ -9,7 +8,6 @@ type UseFilteredTransactionsProps = {
   selectedDate: dayjs.Dayjs | null;
 };
 export const useFilteredTransactions = (props: UseFilteredTransactionsProps) => {
-  // const { dataCtx, selectedDateCtx, loadingCtx } = useData();
   const { data, selectedDate } = props;
 
   // 1. 選択中の日付を "YYYY-MM-DD" 形式の文字列に変換

@@ -1,10 +1,9 @@
 import { DateCalendar } from '@features/transactions/components/DateCalendar'
 import { BudgeList } from '@features/transactions/components/BudgeList';
 import { TotalAmount } from '@styledComponents/TotalAmount';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useData } from '@cnxt/DataContext';
 import dayjs, { Dayjs } from 'dayjs';
-import { TimeoutDialog } from '@styledComponents/TimeoutDialog';
 import { useFilteredTransactions } from '@src/features/transactions/hooks/useFilteredTransactions';
 
 function Home() {
@@ -20,7 +19,6 @@ function Home() {
   } = useData();
 
   const requestAbortController = useRef<AbortController | null>(null);
-  const [openTimeoutDialog, setOpenTimeoutDialog] = useState<boolean>(false);
 
   useEffect(() => {
     // Home画面を開いたときに今日の日にちをセット
@@ -77,11 +75,9 @@ function Home() {
         isLoading={loadingCtx}
         selectedDate={selectedDateCtx}
         setSelectedDate={setSelectedDateCtx}
-        setOpenTimeoutDialog={setOpenTimeoutDialog}
         onUpdate={handleUpdateData}
         onDelete={handleDeleteData}
       />
-      <TimeoutDialog open={openTimeoutDialog} onClose={() => setOpenTimeoutDialog(false)} />
     </React.Fragment>
   );
 }

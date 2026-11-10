@@ -25,7 +25,6 @@ export type BudgeListProps = {
 
   // ── セッター・状態更新系 ──
   setSelectedDate: (date: Dayjs) => void;
-  setOpenTimeoutDialog: (flag: boolean) => void;
 
   // ── アクション（ハンドラ）系 ──
   onUpdate: (payload: DataEntry) => Promise<boolean>;
@@ -37,8 +36,8 @@ export const BudgeList = (props: BudgeListProps) => {
     entries,
     isLoading,
     selectedDate,
-    setSelectedDate,
-    setOpenTimeoutDialog,
+    // setSelectedDate,
+    // setOpenTimeoutDialog,
     onUpdate,
     onDelete
   } = props
@@ -62,10 +61,9 @@ export const BudgeList = (props: BudgeListProps) => {
       // データの更新を実行
       setWillData(null)
       setEditOpen(false)
-
-      // 日時を再設定して、再読み込みをする
-      setSelectedDate(dayjs(selectedDate))
     }
+
+    return result
   }
 
   const handleEditCancel = () => {
@@ -88,8 +86,7 @@ export const BudgeList = (props: BudgeListProps) => {
       setDeleteOpen(false)
     }
 
-    // 日時を再設定して、再読み込みをする
-    setSelectedDate(dayjs(selectedDate))
+    return result
   }
 
   const handleDeleteCancel = () => {
@@ -143,8 +140,9 @@ export const BudgeList = (props: BudgeListProps) => {
           onCancel={handleEditCancel}
           onOk={handleEditOk}
           willEditData={willData}
-          setSelectedDate={setSelectedDate}
-          setOpenTimeoutDialog={setOpenTimeoutDialog} />}
+        // setSelectedDate={setSelectedDate}
+        // setOpenTimeoutDialog={setOpenTimeoutDialog}
+        />}
     </Box>
   )
 }

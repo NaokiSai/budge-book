@@ -7,7 +7,7 @@ import { useState } from 'react';
 interface MessageDialogProps {
   open: boolean;
   onCancel: () => void;
-  onOk: () => void
+  onOk: () => Promise<boolean>; // レスポンスやエラーを受け取れるよう調整
   willDeleteData: DataEntry | null
 }
 
@@ -22,7 +22,8 @@ export const DeleteDialog = (props: MessageDialogProps) => {
 
   const handleNavigate = async () => {
     setLoading(true);
-    await onOk(); // 処理が終わるまで待つ
+    const result = await onOk(); // 処理が終わるまで待つ
+    if (!result) {}
     setLoading(false)
   };
 
