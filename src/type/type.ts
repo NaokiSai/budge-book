@@ -71,6 +71,16 @@ type PayerReimburseTotalsGroup = {
   entries: DataEntry[];
 };
 
+type DataPaymentMethodTotals = {
+  paymentMethod: string;
+    total: number;
+}
+
+type PaymentMethodTotalsGroup = {
+  paymentData: DataPaymentMethodTotals;
+  entries: DataEntry[];
+};
+
 export type {
   GasResponse,
   DataEntry,
@@ -78,5 +88,7 @@ export type {
   FetchDataResponse,
   ChartDataCategoryTotals,
   DataPayerReimburseTotals,
-  PayerReimburseTotalsGroup
+  PayerReimburseTotalsGroup,
+  DataPaymentMethodTotals,
+  PaymentMethodTotalsGroup
 };

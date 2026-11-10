@@ -2,7 +2,7 @@ import { Box, Stack } from '@mui/material'
 import { PieChart as MuiPieChart } from '@mui/x-charts/PieChart';
 import type { ChartDataCategoryTotals } from '@type/type';
 import { PieChartSkeleton } from './PieChartSkeleton';
-import noDataUrl from '@assets/NoData.png'
+import noDataUrl from '@assets/NoData.webp'
 import { Image } from "@styledComponents/Image"
 import { COLORS } from '@src/constants/color';
 

@@ -10,7 +10,7 @@ const Login = lazy(() => import('@pages/Login'));
 const Home = lazy(() => import('@pages/Home'));
 const Add = lazy(() => import('@pages/Add'));
 const Analytics = lazy(() => import('@pages/Analytics'));
-const Settings = lazy(() => import('@pages/Settings'));
+const Paymethod = lazy(() => import('@pages/Paymethod'));
 const Reimburse = lazy(() => import('@pages/Reimburse'));
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/add" element={<Add />} />
                 <Route path="/reimburse" element={<Reimburse />} />
-                <Route path="/settings" element={<Settings />} />
+                <Route path="/paymethod" element={<Paymethod />} />
               </Route>
             </Routes>
           </DataProvider>

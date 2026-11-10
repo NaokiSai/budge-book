@@ -32,13 +32,13 @@ export const BottomNavigation = (props: BottomNavigationProps) => {
     if (pathname === '/analytics') return 1;
     if (pathname === '/add') return 2;
     if (pathname === '/reimburse') return 3;
-    if (pathname === '/settings') return 4;
+    if (pathname === '/paymethod') return 4;
     return 0;
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     // ナビゲーションは素直に画面遷移だけに専念させる
-    const paths = ['/home', '/analytics', '/add', '/reimburse', '/settings'];
+    const paths = ['/home', '/analytics', '/add', '/reimburse', '/paymethod'];
     navigate(paths[newValue] || '/home');
   };
 
