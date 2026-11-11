@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from "vite-plugin-pwa"
 import tsconfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
-import { compression } from 'vite-plugin-compression2'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,10 +10,6 @@ export default defineConfig({
   plugins: [
     tsconfigPaths(),
     react(),
-    compression({
-      algorithms: ['gzip', 'brotliCompress'], // 配列で指定
-      include: [/\.(js|css|html|svg)$/],
-    }),
     VitePWA({
       registerType: 'autoUpdate',
       filename: 'manifest.json', // 名前を .json に固定
@@ -56,21 +51,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        // node_modules を vendor という名前の別ファイルに切り出す設定
+        manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // React, React Router, MUI, Emotion をすべて 1 つの vendor にまとめることで循環参照を防ぐ
-            if (
-              id.includes('react') ||
-              id.includes('react-dom') ||
-              id.includes('react-router-dom') ||
-              id.includes('@mui') ||
-              id.includes('@emotion')
-            ) {
-              return 'vendor-core';
-            }
-
-            // その他のライブラリ（dayjsや認証系など）
-            return 'vendor-libs';
+            return 'vendor';
           }
         },
       },
