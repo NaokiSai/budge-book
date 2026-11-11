@@ -12,7 +12,6 @@ import { DeleteDialog } from "./DeleteDialog"
 import { UpdateDialog } from "./UpdateDialog"
 import type { Dayjs } from "dayjs"
 import { List } from "@src/styledComponents/List"
-import { useIconCache } from "@src/cnxt/IconContext"
 import { EditButton } from "./actions/EditButton"
 import { DeleteButton } from "./actions/DeleteButton"
 
@@ -38,7 +37,6 @@ export const BudgeList = (props: BudgeListProps) => {
     onDelete
   } = props
 
-  const { loading } = useIconCache()
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [willData, setWillData] = useState<DataEntry | null>(null)
@@ -91,7 +89,7 @@ export const BudgeList = (props: BudgeListProps) => {
 
   return (
     <Box sx={{ width: '100vw', flexGrow: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {isLoading || loading ? (
+      {isLoading ? (
         <List>
           {[...Array(3)].map((_, index) => (
             <BudgeListItemSkelton key={index} index={index} />
@@ -99,7 +97,7 @@ export const BudgeList = (props: BudgeListProps) => {
         </List>
       ) : null}
       {entries.length > 0 ? (
-        !isLoading && !loading &&
+        !isLoading &&
         <List sx={{ p: 0, pb: 2 }}>
           <SwipeableList
             fullSwipe={false}
@@ -118,7 +116,7 @@ export const BudgeList = (props: BudgeListProps) => {
           </SwipeableList>
         </List>
       ) : (
-        !isLoading && !loading &&
+        !isLoading &&
         <Stack direction='column' spacing={1} sx={{ width: 'fit-content', m: 'auto' }}>
           <Image src={noDataUrl} alt="No data" />
         </Stack>

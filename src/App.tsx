@@ -1,10 +1,9 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { AuthProvider } from '@cnxt/AuthContext'
-import { DataProvider } from '@cnxt/DataContext' // ← DataProviderで全体を包む
+import { DataProvider } from '@cnxt/DataContext'
 import { PageContainer } from '@styledComponents/PageContaner'
 import { lazy } from 'react'
-import { MainLayout } from '@styledComponents/MainLayout' // 共通レイアウト
-import { IconProvider } from './cnxt/IconContext.tsx'
+import { MainLayout } from '@styledComponents/MainLayout'
 
 const Login = lazy(() => import('@pages/Login'));
 const Home = lazy(() => import('@pages/Home'));
@@ -13,28 +12,49 @@ const Analytics = lazy(() => import('@pages/Analytics'));
 const Paymethod = lazy(() => import('@pages/Paymethod'));
 const Reimburse = lazy(() => import('@pages/Reimburse'));
 
+/**
+ * ログイン状態をチェックし、未認証なら /login へリダイレクトするガードコンポーネント
+ */
+const ProtectedRoute = () => {
+  const isAuthenticated = !!localStorage.getItem('id_token');
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
+};
+
 function App() {
   return (
     <PageContainer>
       <AuthProvider>
-        <IconProvider>
-          <DataProvider> {/* DataContextを有効にする */}
-            <Routes>
-              {/* ログイン画面はAppBarやBottomNavが不要なレイアウト */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<Login />} />
+        <Routes>
+          {/* ========================================== */}
+          {/* 未認証エリア（DataProviderは置かない）         */}
+          {/* ========================================== */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
 
-              {/* 認証後の共通レイアウトを使うグループ */}
-              <Route element={<MainLayout />}>
-                <Route path="/home" element={<Home />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/add" element={<Add />} />
-                <Route path="/reimburse" element={<Reimburse />} />
-                <Route path="/paymethod" element={<Paymethod />} />
-              </Route>
-            </Routes>
-          </DataProvider>
-        </IconProvider>
+          {/* ========================================== */}
+          {/* 認証済みエリア（ここで初めて各種プロバイダーを展開） */}
+          {/* ========================================== */}
+          <Route element={<ProtectedRoute />}>
+            <Route
+              element={
+                <DataProvider>
+                  <MainLayout />
+                </DataProvider>
+              }
+            >
+              <Route path="/home" element={<Home />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/add" element={<Add />} />
+              <Route path="/reimburse" element={<Reimburse />} />
+              <Route path="/paymethod" element={<Paymethod />} />
+            </Route>
+          </Route>
+        </Routes>
       </AuthProvider>
     </PageContainer>
   )

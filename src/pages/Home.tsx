@@ -16,15 +16,20 @@ function Home() {
     handleUpdateData,
     handleDeleteData,
     setSelectedMonthCtx,
+    selectedMonthCtx
   } = useData();
 
   const requestAbortController = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    // Home画面を開いたときに今日の日にちをセット
-    setSelectedDateCtx(dayjs());
-    const currentMonth = dayjs().startOf('month');
-    setSelectedMonthCtx(currentMonth)
+    // すでに日付や月がセットされている場合は、Home画面に戻ってきたときの強制上書き・再フェッチを防ぐ
+    if (!selectedDateCtx) {
+      setSelectedDateCtx(dayjs());
+    }
+    if (!selectedMonthCtx) { // ※selectedMonthCtxをDataContextから取得している場合
+      const currentMonth = dayjs().startOf('month');
+      setSelectedMonthCtx(currentMonth);
+    }
   }, []);
 
   // コンテキストから得た dataCtx と selectedDateCtx を純粋な計算フックに渡す

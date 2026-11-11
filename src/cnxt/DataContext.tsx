@@ -50,7 +50,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       setLoadingCtx(true);
       try {
         const response = await getData(targetMonth);
-
+        console.log('uuu')
         // タイムアウト（HTTP 419など）のハンドリング
         if (response?.status === 'error' && response.httpCode === 419) {
           setOpenTimeoutDialog(true);
@@ -60,15 +60,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         if (response !== null && response.data !== undefined && response.data.period === targetMonth) {
           // 取得したエントリーをコンテキストのキャッシュに保存
           setDataCtx(response.data.entries);
-
-          // ★ 初回マウント時はスキップし、2回目以降（ユーザーが月を変更したとき）だけ実行する
-          if (isInitialMount.current) {
-            isInitialMount.current = false; // 初回フラグをオフにする
-          } else {
-            // 日にちを月の初日に更新しておく
-            const firstDayOfMonth = selectedMonthCtx.date(1);
-            setSelectedDateCtx(firstDayOfMonth);
-          }
         }
       } catch (error) {
         // エラーハンドリング

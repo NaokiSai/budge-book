@@ -1,12 +1,6 @@
 import { useMemo } from 'react';
 import { MASTERS } from '@service/master';
-import type { ChartDataCategoryTotals, DataEntry } from '@type/type';
-
-// カテゴリごとのグループ情報を定義
-export type CategoryGroup = {
-  chartData: ChartDataCategoryTotals; // グラフ用のデータ
-  entries: DataEntry[]; // ★ カテゴリごとの明細配列
-};
+import type { CategoryGroup, ChartDataCategoryTotals, DataEntry } from '@type/type';
 
 export const useTransactionAnalytics = (transactions: DataEntry[]) => {
   return useMemo(() => {
@@ -19,7 +13,7 @@ export const useTransactionAnalytics = (transactions: DataEntry[]) => {
 
     // 1. ICATを含まないデータをフィルタリングし、カテゴリごとに集計・グループ化する
     transactions
-      .filter((entry: any) => !entry.category.includes('ICAT'))
+      // .filter((entry: any) => !entry.category.includes('ICAT'))
       .forEach((entry: any) => {
         if (entry.category) {
           if (!categoryTotals[entry.category]) {

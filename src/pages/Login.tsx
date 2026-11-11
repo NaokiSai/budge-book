@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material';
 import type { GasResponse } from '@type/type';
 import { gasClient } from '@service/api';
 import { Image } from '@styledComponents/Image';
-import TopImage from './../assets/TopLogo.png';
+import TopImage from './../assets/TopLogo.webp';
 import { useState, useEffect } from 'react';
 
 export default function Login() {

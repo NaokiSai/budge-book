@@ -2,7 +2,8 @@ import { Badge, Stack, Typography } from '@mui/material';
 import type { DataEntry } from '@type/type';
 import { MASTERS } from '@service/master';
 import { ListItem } from '@styledComponents/ListItem';
-import { CachedIcon } from './CachedIcon';
+import { Image } from '@src/styledComponents/Image';
+import { BASE } from '@src/constants/setting';
 
 export const BudgeListItem = ({ entry }: { entry: DataEntry }) => {
   return (
@@ -20,9 +21,7 @@ export const BudgeListItem = ({ entry }: { entry: DataEntry }) => {
               display: entry.isAdvancePayment === 'PISADV002' ? 'unset' : 'none'
             }
           }}>
-          <CachedIcon 
-          fileName={`${entry.category}.webp`} 
-          style={{ width: '36px', height: '36px', padding: '2px', backgroundColor: '#F5F5F5', borderRadius: '2px', margin: 'auto !important' }} />
+          <Image src={`${BASE}assets/${entry.category}.webp`} sx={{ width: 36, height: 36, backgroundColor: '#F5F5F5', borderRadius: 1, my: 'auto !important' }} />
         </Badge>
         <Stack direction="column" spacing={0.1} sx={{ width: '100%', my: 'auto !important' }}>
           <Stack direction="row" sx={{ width: '100%' }}>

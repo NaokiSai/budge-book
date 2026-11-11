@@ -2,8 +2,8 @@ import { List } from "@styledComponents/List"
 import { BudgeCategoryListItem } from "./list/BudgeCategoryListItem"
 import { BudgeCategoryListItemSkeleton } from "./list/BudgeCategoryListItemSkeleton";
 import React from "react";
-import type { CategoryGroup } from "../hooks/useTransactionAnalytics";
 import { COLORS } from "@src/constants/color";
+import type { CategoryGroup } from "@src/type/type";
 
 const SKELETON_NUMBER = 6
 

@@ -1,8 +1,8 @@
 import { Box, Drawer, Stack, Typography } from "@mui/material"
 import { Button } from '@styledComponents/Button';
 import { BudgeList, type BudgeListProps } from "@features/transactions/components/BudgeList";
-import type { CategoryGroup } from "../hooks/useTransactionAnalytics";
 import { TotalAmount } from "@styledComponents/TotalAmount";
+import type { CategoryGroup } from "@src/type/type";
 
 type BudgeCategoryGroupListProps = Omit<BudgeListProps, 'entries'> & {
   categoryGroups: CategoryGroup

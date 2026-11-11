@@ -60,6 +60,11 @@ type ChartDataCategoryTotals = {
   rate?: number; // 全体に対する割合（%）を追加
 };
 
+type CategoryGroup = {
+  chartData: ChartDataCategoryTotals; // グラフ用のデータ
+  entries: DataEntry[]; // ★ カテゴリごとの明細配列
+};
+
 /** 支払者＆立替　合計データ */
 type DataPayerReimburseTotals = {
   paymentPerson: string;         // 支払者コード
@@ -71,6 +76,7 @@ type PayerReimburseTotalsGroup = {
   entries: DataEntry[];
 };
 
+/** 支払方法 */
 type DataPaymentMethodTotals = {
   paymentMethod: string;
     total: number;
@@ -87,6 +93,7 @@ export type {
   FetchDataPayload,
   FetchDataResponse,
   ChartDataCategoryTotals,
+  CategoryGroup,
   DataPayerReimburseTotals,
   PayerReimburseTotalsGroup,
   DataPaymentMethodTotals,

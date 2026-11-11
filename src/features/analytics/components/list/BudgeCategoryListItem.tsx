@@ -2,7 +2,8 @@ import { ListItemButton, Stack, Typography } from '@mui/material';
 import type { ChartDataCategoryTotals } from '@type/type';
 import { MASTERS } from '@service/master';
 import { ListItem } from '@styledComponents/ListItem';
-import { CachedIcon } from '@features/transactions/components/list/CachedIcon';
+import { Image } from '@src/styledComponents/Image';
+import { BASE } from '@src/constants/setting';
 
 type BudgeCategoryListItemProps = {
   data: ChartDataCategoryTotals,
@@ -19,9 +20,7 @@ export const BudgeCategoryListItem = (props: BudgeCategoryListItemProps) => {
         onClick(props.index)
       }}>
         <Stack direction="row" spacing={0} sx={{ width: '100%' }}>
-          <CachedIcon
-            fileName={`${data.catid}.webp`}
-            style={{ width: '32px', height: '32px', padding: '2px', backgroundColor: '#F5F5F5', borderRadius: '2px', margin: 'auto !important' }} />
+          <Image src={`${BASE}assets/${data.catid}.webp`} sx={{ width: 36, height: 36, backgroundColor: '#F5F5F5', borderRadius: 1, my: 'auto !important' }} />
           <Stack direction="column" spacing={0.1} sx={{ flexGrow: 1, justifyContent: 'center', width: 'calc(100% - 36px)' }}>
             <Stack direction="row" sx={{ width: '100%' }}>
               <Typography sx={{ fontSize: 12, ml: 2, mr: 'auto', color: color, fontWeight: 600 }}>
