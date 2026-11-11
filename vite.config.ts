@@ -58,38 +58,22 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // 1. React & Router 関連
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
-              return 'vendor-react';
+            // React, React Router, MUI, Emotion をすべて 1 つの vendor にまとめることで循環参照を防ぐ
+            if (
+              id.includes('react') ||
+              id.includes('react-dom') ||
+              id.includes('react-router-dom') ||
+              id.includes('@mui') ||
+              id.includes('@emotion')
+            ) {
+              return 'vendor-core';
             }
 
-            // 2. MUI コア & Emotion 関連
-            if (id.includes('@mui/material') || id.includes('@emotion')) {
-              return 'vendor-mui';
-            }
-
-            // 3. MUI グラフ（容量が大きいので独立させる）
-            if (id.includes('@mui/x-charts-pro')) {
-              return 'vendor-mui-charts';
-            }
-
-            // 4. MUI アイコン（非常にファイル数が多いため独立）
-            if (id.includes('@mui/icons-material')) {
-              return 'vendor-mui-icons';
-            }
-
-            // 5. 日付系や Google OAuth などのその他ライブラリ
-            if (id.includes('dayjs') || id.includes('@react-oauth') || id.includes('jwt-decode')) {
-              return 'vendor-libs';
-            }
-
-            // 残りの node_modules
-            return 'vendor';
+            // その他のライブラリ（dayjsや認証系など）
+            return 'vendor-libs';
           }
         },
       },
     },
-    // 必要に応じて警告しきい値を調整（例: 700 kB）
-    chunkSizeWarningLimit: 700,
   },
 })
